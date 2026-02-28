@@ -1,6 +1,5 @@
 ---
-// SubscribeBox — Buttondown newsletter embed
-// Replace YOUR_BUTTONDOWN_USERNAME with your actual Buttondown username
+// SubscribeBox — Brevo newsletter subscription
 ---
 <div class="form-box">
   <h3>Weekly digest</h3>
@@ -10,26 +9,56 @@
     <em style="font-size:0.8em;">Digest hebdomadaire · Unsubscribe anytime</em>
   </p>
 
-  <!-- Buttondown embed form -->
-  <form
-    action="https://buttondown.email/api/emails/embed-subscribe/human-ai-human"
-    method="post"
-    target="popupwindow"
-    onsubmit="window.open('https://buttondown.email/human-ai-human', 'popupwindow')"
-    class="embeddable-buttondown-form"
-  >
+  <form id="subscribe-form">
     <div class="form-row">
       <input
         type="email"
         name="email"
-        id="bd-email"
+        id="sub-email"
         placeholder="your@email.com"
         required
         class="form-input"
         aria-label="Email address"
       />
-      <input type="hidden" name="tag" value="website" />
-      <button type="submit" class="btn-primary">Subscribe</button>
+      <button type="submit" class="btn-primary" id="sub-submit">Subscribe</button>
     </div>
+    <p id="sub-status" style="margin-top:0.6rem; margin-bottom:0; font-size:0.875rem; color:var(--text-secondary);"></p>
   </form>
 </div>
+
+<script>
+  const form = document.getElementById('subscribe-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('sub-submit') as HTMLButtonElement | null;
+  const statusEl = document.getElementById('sub-status');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!submitBtn || !statusEl) return;
+
+    const email = (document.getElementById('sub-email') as HTMLInputElement)?.value ?? '';
+    if (!email) return;
+
+    submitBtn.disabled = true;
+    statusEl.textContent = 'Subscribing…';
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+      statusEl.textContent = data.message ?? data.error ?? 'Done.';
+
+      if (res.ok) {
+        form.reset();
+      } else {
+        submitBtn.disabled = false;
+      }
+    } catch {
+      statusEl.textContent = 'Network error. Please try again.';
+      submitBtn.disabled = false;
+    }
+  });
+</script>
