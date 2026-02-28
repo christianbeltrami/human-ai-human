@@ -1,0 +1,45 @@
+---
+import TagPill from './TagPill.astro';
+
+interface Props {
+  title: string;
+  slug: string;
+  date: Date;
+  tags?: string[];
+  lang?: 'fr' | 'en';
+  excerpt?: string;
+}
+
+const { title, slug, date, tags = [], lang = 'fr', excerpt } = Astro.props;
+
+const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-CA' : 'en-CA', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(new Date(date));
+---
+<li class="post-list-item">
+  <article>
+    <h2 style="margin-top:0; font-size:1.15rem;">
+      <a href={`/posts/${slug}`} style="text-decoration:none; color:var(--text);">
+        {title}
+      </a>
+    </h2>
+
+    <div class="post-meta">
+      <time datetime={new Date(date).toISOString()}>{formattedDate}</time>
+      {lang && <span class="lang-badge">{lang.toUpperCase()}</span>}
+      {tags.length > 0 && (
+        <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+          {tags.map(tag => <TagPill tag={tag} />)}
+        </div>
+      )}
+    </div>
+
+    {excerpt && (
+      <p style="margin-top:0.75rem; margin-bottom:0; color:var(--text-secondary); font-size:0.9rem;">
+        {excerpt}
+      </p>
+    )}
+  </article>
+</li>

@@ -1,0 +1,24 @@
+{
+  "name": "human-ai-human",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "tina": "tinacms dev -c \"astro dev\""
+  },
+  "dependencies": {
+    "astro": "^5.2.0",
+    "@astrojs/mdx": "^4.3.13",
+    "@astrojs/rss": "^4.0.15",
+    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/vercel": "^9.0.4",
+    "tinacms": "^3.5.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

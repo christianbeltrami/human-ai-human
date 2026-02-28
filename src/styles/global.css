@@ -1,0 +1,474 @@
+/* ============================================================
+   human-ai-human.org — Global Styles
+   Based on journal-ai-tech-style-guide.md
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* ── CSS Variables ───────────────────────────────────────── */
+
+:root {
+  /* Light mode (default) */
+  --bg:          #F4F3EE;
+  --surface:     #FEFEF3;
+  --text:        #141414;
+  --text-secondary: #5A5A5A;
+  --border:      #D9D4C8;
+  --accent:      #F93C20;
+  --link:        #C73019;
+  --link-hover:  #AE2A16;
+
+  /* Typography */
+  --font-serif:  'Noto Serif', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-mono:   ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                 'Liberation Mono', 'Courier New', monospace;
+  --text-size:   19px;
+  --line-height: 1.7;
+  --max-width:   65ch;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          #0F1115;
+    --surface:     #151821;
+    --text:        #E8E8E8;
+    --text-secondary: #B9B9B9;
+    --border:      #2A2F3A;
+    --accent:      #F93C20;
+    --link:        #FF6A52;
+    --link-hover:  #FF826E;
+  }
+}
+
+/* Manual dark mode toggle */
+[data-theme="dark"] {
+  --bg:          #0F1115;
+  --surface:     #151821;
+  --text:        #E8E8E8;
+  --text-secondary: #B9B9B9;
+  --border:      #2A2F3A;
+  --accent:      #F93C20;
+  --link:        #FF6A52;
+  --link-hover:  #FF826E;
+}
+
+[data-theme="light"] {
+  --bg:          #F4F3EE;
+  --surface:     #FEFEF3;
+  --text:        #141414;
+  --text-secondary: #5A5A5A;
+  --border:      #D9D4C8;
+  --accent:      #F93C20;
+  --link:        #C73019;
+  --link-hover:  #AE2A16;
+}
+
+/* ── Reset & Base ────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: var(--text-size);
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-serif);
+  line-height: var(--line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ── Typography ──────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.15rem; }
+
+p {
+  margin-bottom: 1.4em;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+}
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+/* ── Code ────────────────────────────────────────────────── */
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.15em 0.4em;
+}
+
+pre {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25em 1.5em;
+  overflow-x: auto;
+  margin-bottom: 1.4em;
+}
+
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* ── Separators ──────────────────────────────────────────── */
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5em 0;
+}
+
+/* ── Images ──────────────────────────────────────────────── */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Lists ───────────────────────────────────────────────── */
+
+ul, ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.4em;
+}
+
+li { margin-bottom: 0.35em; }
+
+/* ── Blockquote ──────────────────────────────────────────── */
+
+blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1.25em;
+  margin: 1.5em 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ── Site Header ─────────────────────────────────────────── */
+
+.site-header {
+  padding: 2.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3rem;
+}
+
+.site-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.site-nav a {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  margin-left: 1.5rem;
+}
+
+.site-nav a:hover {
+  color: var(--link-hover);
+}
+
+/* ── Site Footer ─────────────────────────────────────────── */
+
+.site-footer {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+  margin-top: 4rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ── Theme Toggle ────────────────────────────────────────── */
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* ── Post List ───────────────────────────────────────────── */
+
+.post-list {
+  list-style: none;
+  padding: 0;
+}
+
+.post-list-item {
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-list-item:last-child {
+  border-bottom: none;
+}
+
+/* ── Post Article ────────────────────────────────────────── */
+
+.post-header {
+  margin-bottom: 2rem;
+}
+
+.post-title {
+  margin-top: 0;
+}
+
+.post-meta {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.post-body {
+  margin-top: 2rem;
+}
+
+/* ── Tag Pills ───────────────────────────────────────────── */
+
+.tag-pill {
+  display: inline-block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-secondary);
+  font-size: 0.775rem;
+  font-family: var(--font-mono);
+  padding: 0.2em 0.55em;
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.tag-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.tag-pill-accent {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ── Language Badge ──────────────────────────────────────── */
+
+.lang-badge {
+  display: inline-block;
+  background: var(--border);
+  border-radius: 2px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.1em 0.45em;
+  text-transform: uppercase;
+}
+
+/* ── Forms (Subscribe + Question) ───────────────────────── */
+
+.form-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.75rem 2rem;
+  margin: 2.5rem 0;
+}
+
+.form-box h3 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.form-box p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.form-input {
+  flex: 1;
+  min-width: 200px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  padding: 0.6rem 0.9rem;
+  transition: border-color 0.15s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  transition: border-color 0.15s ease;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn-primary {
+  background: var(--accent);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.6rem 1.25rem;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Tag Page Header ─────────────────────────────────────── */
+
+.tag-header {
+  margin-bottom: 2rem;
+}
+
+.tag-header p {
+  color: var(--text-secondary);
+}
+
+/* ── 404 Page ────────────────────────────────────────────── */
+
+.not-found {
+  text-align: center;
+  padding: 5rem 0;
+}
+
+.not-found h1 {
+  font-size: 4rem;
+  color: var(--accent);
+  margin-top: 0;
+}
+
+/* ── Back Link ───────────────────────────────────────────── */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-decoration: none;
+  margin-bottom: 2rem;
+}
+
+.back-link:hover {
+  color: var(--link-hover);
+}
+
+/* ── Tags list page ──────────────────────────────────────── */
+
+.all-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  html { font-size: 17px; }
+  .container { padding: 0 1rem; }
+  .site-header { padding: 1.5rem 0 1rem; }
+  .form-box { padding: 1.25rem; }
+}

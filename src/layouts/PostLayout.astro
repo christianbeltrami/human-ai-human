@@ -1,0 +1,44 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import TagPill from '../components/TagPill.astro';
+
+interface Props {
+  title: string;
+  date: Date;
+  tags?: string[];
+  lang?: 'fr' | 'en';
+  excerpt?: string;
+}
+
+const { title, date, tags = [], lang = 'fr', excerpt } = Astro.props;
+
+const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-CA' : 'en-CA', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(new Date(date));
+---
+<BaseLayout title={title} description={excerpt}>
+  <article>
+    <a href="/" class="back-link">← Tous les articles</a>
+
+    <header class="post-header">
+      <h1 class="post-title">{title}</h1>
+      <div class="post-meta">
+        <time datetime={new Date(date).toISOString()}>{formattedDate}</time>
+        {lang && (
+          <span class="lang-badge">{lang.toUpperCase()}</span>
+        )}
+        {tags.length > 0 && (
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            {tags.map(tag => <TagPill tag={tag} />)}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <div class="post-body">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

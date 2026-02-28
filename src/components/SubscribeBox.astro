@@ -1,0 +1,35 @@
+---
+// SubscribeBox — Buttondown newsletter embed
+// Replace YOUR_BUTTONDOWN_USERNAME with your actual Buttondown username
+---
+<div class="form-box">
+  <h3>Weekly digest</h3>
+  <p>
+    Receive a summary of posts every Sunday — no tracking, unsubscribe anytime.
+    <br />
+    <em style="font-size:0.8em;">Digest hebdomadaire · Unsubscribe anytime</em>
+  </p>
+
+  <!-- Buttondown embed form -->
+  <form
+    action="https://buttondown.email/api/emails/embed-subscribe/YOUR_BUTTONDOWN_USERNAME"
+    method="post"
+    target="popupwindow"
+    onsubmit="window.open('https://buttondown.email/YOUR_BUTTONDOWN_USERNAME', 'popupwindow')"
+    class="embeddable-buttondown-form"
+  >
+    <div class="form-row">
+      <input
+        type="email"
+        name="email"
+        id="bd-email"
+        placeholder="your@email.com"
+        required
+        class="form-input"
+        aria-label="Email address"
+      />
+      <input type="hidden" name="tag" value="website" />
+      <button type="submit" class="btn-primary">Subscribe</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagPill from '../../components/TagPill.astro';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+
+// Count posts per tag
+const tagCounts: Record<string, number> = {};
+for (const post of allPosts) {
+  for (const tag of post.data.tags) {
+    tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
+  }
+}
+
+const sortedTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+---
+<BaseLayout title="Tags" description="Browse posts by topic.">
+  <div class="tag-header">
+    <h1 style="margin-top:0;">Tags</h1>
+    <p>Browse posts by topic.</p>
+  </div>
+
+  {sortedTags.length === 0 ? (
+    <p style="color:var(--text-secondary);">No tags yet.</p>
+  ) : (
+    <div class="all-tags">
+      {sortedTags.map(([tag, count]) => (
+        <span style="display:inline-flex; align-items:center; gap:0.3rem;">
+          <TagPill tag={tag} />
+          <span style="color:var(--text-secondary); font-size:0.75rem; font-family:var(--font-mono);">
+            {count}
+          </span>
+        </span>
+      ))}
+    </div>
+  )}
+</BaseLayout>

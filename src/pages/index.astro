@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import SubscribeBox from '../components/SubscribeBox.astro';
+import QuestionBox from '../components/QuestionBox.astro';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<BaseLayout
+  title="human-ai-human"
+  description="Notes on creative AI, cinema, and human collaboration — by Christian Beltrami."
+>
+  {posts.length === 0 ? (
+    <p style="color:var(--text-secondary); margin-top:2rem;">
+      No posts yet — check back soon.
+    </p>
+  ) : (
+    <ul class="post-list">
+      {posts.map(post => (
+        <PostCard
+          title={post.data.title}
+          slug={post.slug}
+          date={post.data.date}
+          tags={post.data.tags}
+          lang={post.data.lang}
+          excerpt={post.data.excerpt}
+        />
+      ))}
+    </ul>
+  )}
+
+  <hr />
+  <SubscribeBox />
+  <QuestionBox />
+</BaseLayout>

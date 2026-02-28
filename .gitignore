@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Vercel
+.vercel/
+
+# TinaCMS local state
+tina/__generated__/
+.tina/__generated__/
+
+# Claude Code local settings
+.claude/

@@ -1,0 +1,85 @@
+---
+// QuestionBox — Submit a question with AI troll filter
+---
+<div class="form-box" id="questions">
+  <h3>Ask a question</h3>
+  <p>
+    Questions, reactions, even difficult critiques — all welcome.
+    <br />
+    <em style="font-size:0.8em;">Posez une question · Questions bienvenues</em>
+  </p>
+
+  <form id="question-form">
+    <div class="form-row">
+      <input
+        type="text"
+        name="name"
+        id="q-name"
+        placeholder="Name (optional)"
+        class="form-input"
+        aria-label="Your name"
+      />
+      <input
+        type="email"
+        name="email"
+        id="q-email"
+        placeholder="Email (optional)"
+        class="form-input"
+        aria-label="Your email"
+      />
+    </div>
+    <textarea
+      name="question"
+      id="q-question"
+      placeholder="Your question or comment…"
+      required
+      class="form-textarea"
+      aria-label="Your question"
+    ></textarea>
+    <div style="margin-top:0.75rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+      <button type="submit" class="btn-primary" id="q-submit">Send</button>
+      <span id="q-status" style="font-size:0.875rem; color:var(--text-secondary);"></span>
+    </div>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('question-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('q-submit') as HTMLButtonElement | null;
+  const statusEl = document.getElementById('q-status');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!submitBtn || !statusEl) return;
+
+    const name = (document.getElementById('q-name') as HTMLInputElement)?.value ?? '';
+    const email = (document.getElementById('q-email') as HTMLInputElement)?.value ?? '';
+    const question = (document.getElementById('q-question') as HTMLTextAreaElement)?.value ?? '';
+
+    if (!question.trim()) return;
+
+    submitBtn.disabled = true;
+    statusEl.textContent = 'Sending…';
+
+    try {
+      const res = await fetch('/api/submit-question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, question }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        statusEl.textContent = data.message ?? 'Thank you for your message.';
+        form.reset();
+      } else {
+        statusEl.textContent = 'Something went wrong. Please try again.';
+        submitBtn.disabled = false;
+      }
+    } catch {
+      statusEl.textContent = 'Network error. Please try again.';
+      submitBtn.disabled = false;
+    }
+  });
+</script>

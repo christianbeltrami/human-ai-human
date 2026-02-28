@@ -1,0 +1,103 @@
+---
+import '../styles/global.css';
+import HahHeader from '../components/HahHeader.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = 'human-ai-human',
+  description = 'Notes on creative AI, cinema, and human collaboration — by Christian Beltrami.',
+  ogImage = '/og-default.png',
+} = Astro.props;
+
+const siteTitle = title === 'human-ai-human' ? title : `${title} — human-ai-human`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={siteTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="human-ai-human RSS" href="/rss.xml" />
+
+    <!-- Umami Analytics (replace data-website-id with your Umami ID) -->
+    <!-- <script defer src="https://cloud.umami.is/script.js" data-website-id="YOUR_UMAMI_ID"></script> -->
+
+    <title>{siteTitle}</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="site-header">
+        <HahHeader />
+        <nav class="site-nav">
+          <div style="display:flex; gap:0.25rem; flex-wrap:wrap;">
+            <a href="/">Articles</a>
+            <a href="/tags">Tags</a>
+            <a href="/rss.xml" style="font-size:0.8rem;">RSS</a>
+          </div>
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Toggle dark/light mode"
+          >
+            ◐
+          </button>
+        </nav>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <p>
+          <a href="https://human-ai-human.org">human-ai-human.org</a> ·
+          Questions? <a href="/#questions">Write to us</a> ·
+          <a href="/rss.xml">RSS</a>
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      // Theme toggle — respects system preference, allows manual override
+      const STORAGE_KEY = 'hah-theme';
+      const root = document.documentElement;
+      const btn = document.getElementById('theme-toggle');
+
+      function getPreferredTheme(): 'dark' | 'light' {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored === 'dark' || stored === 'light') return stored;
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+
+      function applyTheme(theme: 'dark' | 'light') {
+        root.setAttribute('data-theme', theme);
+        if (btn) btn.textContent = theme === 'dark' ? '○' : '◐';
+      }
+
+      applyTheme(getPreferredTheme());
+
+      btn?.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') as 'dark' | 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        localStorage.setItem(STORAGE_KEY, next);
+        applyTheme(next);
+      });
+    </script>
+  </body>
+</html>
