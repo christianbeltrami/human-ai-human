@@ -192,16 +192,19 @@ blockquote {
 /* ── Site Header ─────────────────────────────────────────── */
 
 .site-header {
-  padding: 2.5rem 0 1.5rem;
+  padding: 2.5rem 0 0;
   border-bottom: 1px solid var(--border);
   margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .site-nav {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 0.5rem;
+  align-items: flex-end;
+  margin-top: auto;
+  padding-bottom: 0.4rem;
 }
 
 .site-nav a {
