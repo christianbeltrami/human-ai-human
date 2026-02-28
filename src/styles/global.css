@@ -197,7 +197,7 @@ blockquote {
   margin-bottom: 3rem;
   display: flex;
   flex-direction: column;
-  min-height: 10rem;
+  min-height: 14rem;
 }
 
 .site-nav {
