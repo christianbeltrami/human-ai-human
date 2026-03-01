@@ -49,7 +49,7 @@ export const POST: APIRoute = async ({ request }) => {
   // 204 = already exists and updated, 201 = created
   if (res.status === 201 || res.status === 204) {
     return new Response(
-      JSON.stringify({ message: 'Subscribed! Check your inbox to confirm.' }),
+      JSON.stringify({ message: 'Thank you — you are now subscribed.' }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   }
