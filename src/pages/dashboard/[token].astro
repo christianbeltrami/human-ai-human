@@ -1,0 +1,444 @@
+---
+export const prerender = false;
+
+import '../../styles/global.css';
+
+// ── Auth ──────────────────────────────────────────────────
+const { token } = Astro.params;
+const validToken = import.meta.env.DASHBOARD_TOKEN;
+
+if (!validToken || token !== validToken) {
+  return new Response(null, { status: 404 });
+}
+
+// ── Helpers ───────────────────────────────────────────────
+const UMAMI_ID   = import.meta.env.UMAMI_WEBSITE_ID   ?? '60475f9b-09ca-4103-b1d9-5f69864411e5';
+const UMAMI_KEY  = import.meta.env.UMAMI_API_KEY       ?? '';
+const BREVO_KEY  = import.meta.env.BREVO_API_KEY       ?? '';
+const AT_TOKEN   = import.meta.env.AIRTABLE_TOKEN      ?? '';
+const AT_BASE    = import.meta.env.AIRTABLE_BASE_ID    ?? '';
+const AT_TABLE   = import.meta.env.AIRTABLE_TABLE_ID   ?? 'Questions';
+
+const now   = Date.now();
+const day7  = now - 7  * 86400000;
+const day30 = now - 30 * 86400000;
+
+function umamiHeaders() {
+  return { 'x-umami-api-key': UMAMI_KEY };
+}
+
+async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  try { return await fn(); } catch { return fallback; }
+}
+
+// ── Fetch all data in parallel ────────────────────────────
+
+const [
+  stats7,
+  stats30,
+  topPages,
+  referrers,
+  cities,
+  brevoContacts,
+  brevoNew,
+  airtableQuestions,
+] = await Promise.all([
+
+  // Umami stats 7d
+  safe(async () => {
+    const r = await fetch(
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/stats?startAt=${day7}&endAt=${now}`,
+      { headers: umamiHeaders() }
+    );
+    return r.ok ? r.json() : null;
+  }, null),
+
+  // Umami stats 30d
+  safe(async () => {
+    const r = await fetch(
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/stats?startAt=${day30}&endAt=${now}`,
+      { headers: umamiHeaders() }
+    );
+    return r.ok ? r.json() : null;
+  }, null),
+
+  // Top pages 30d
+  safe(async () => {
+    const r = await fetch(
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=url&startAt=${day30}&endAt=${now}&limit=5`,
+      { headers: umamiHeaders() }
+    );
+    return r.ok ? r.json() : [];
+  }, []),
+
+  // Referrers 30d
+  safe(async () => {
+    const r = await fetch(
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=referrer&startAt=${day30}&endAt=${now}&limit=6`,
+      { headers: umamiHeaders() }
+    );
+    return r.ok ? r.json() : [];
+  }, []),
+
+  // Cities 30d
+  safe(async () => {
+    const r = await fetch(
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=city&startAt=${day30}&endAt=${now}&limit=8`,
+      { headers: umamiHeaders() }
+    );
+    return r.ok ? r.json() : [];
+  }, []),
+
+  // Brevo total contacts
+  safe(async () => {
+    const r = await fetch('https://api.brevo.com/v3/contacts/lists/3', {
+      headers: { 'api-key': BREVO_KEY }
+    });
+    return r.ok ? r.json() : null;
+  }, null),
+
+  // Brevo new subscribers this week
+  safe(async () => {
+    const since = new Date(day7).toISOString();
+    const r = await fetch(
+      `https://api.brevo.com/v3/contacts?limit=100&sort=desc&modifiedSince=${since}`,
+      { headers: { 'api-key': BREVO_KEY } }
+    );
+    if (!r.ok) return 0;
+    const d = await r.json();
+    return d?.contacts?.length ?? 0;
+  }, 0),
+
+  // Airtable recent questions (last 20)
+  safe(async () => {
+    const url = `https://api.airtable.com/v0/${AT_BASE}/${encodeURIComponent(AT_TABLE)}?maxRecords=20&sort%5B0%5D%5Bfield%5D=Date&sort%5B0%5D%5Bdirection%5D=desc`;
+    const r = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${AT_TOKEN}` }
+    });
+    if (!r.ok) return [];
+    const d = await r.json();
+    return d?.records ?? [];
+  }, []),
+
+]);
+
+// ── Derived values ────────────────────────────────────────
+const views7  = stats7?.pageviews?.value  ?? '—';
+const views30 = stats30?.pageviews?.value ?? '—';
+const totalSubscribers = brevoContacts?.totalSubscribers ?? '—';
+
+const pendingQuestions = (airtableQuestions as any[]).filter(
+  (q: any) => q.fields?.Valid && q.fields?.Status === 'new'
+);
+
+const today = new Intl.DateTimeFormat('en-CA', {
+  year: 'numeric', month: 'long', day: 'numeric',
+  hour: '2-digit', minute: '2-digit',
+}).format(new Date());
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — human-ai-human</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    .dash {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 2rem 4rem;
+    }
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .dash-title {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--accent);
+      margin: 0;
+    }
+    .dash-date {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Stat cards */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+    .stat-value {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-value.large { font-size: 2.8rem; }
+
+    /* Grid sections */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+    }
+    .panel-title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0 0 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Lists */
+    .metric-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .metric-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+    .metric-item:last-child { border-bottom: none; }
+    .metric-name {
+      color: var(--text);
+      font-family: var(--font-serif);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 75%;
+    }
+    .metric-count {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Questions */
+    .question-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+    .question-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .question-item:last-child { border-bottom: none; }
+    .question-meta {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.3rem;
+    }
+    .question-text {
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .question-from {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15em 0.5em;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .badge-new    { background: var(--accent); color: #fff; }
+    .badge-valid  { background: var(--border); color: var(--text-secondary); }
+    .badge-filtered { background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); }
+
+    .empty { color: var(--text-secondary); font-size: 0.875rem; font-style: italic; }
+
+    @media (max-width: 900px) {
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dash">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <p class="dash-title">Human ——▶ AI ——▶ Human &nbsp;·&nbsp; Dashboard</p>
+      <span class="dash-date">{today}</span>
+    </div>
+
+    <!-- Row 1: Key numbers -->
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">Subscribers</div>
+        <div class="stat-value large">{totalSubscribers}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">New this week</div>
+        <div class="stat-value large">{brevoNew}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Page views · 7 days</div>
+        <div class="stat-value">{views7}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Page views · 30 days</div>
+        <div class="stat-value">{views30}</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Top articles + Traffic sources -->
+    <div class="grid-2">
+      <div class="panel">
+        <p class="panel-title">Top articles · 30 days</p>
+        {(topPages as any[]).length === 0
+          ? <p class="empty">No data yet — check Umami API key.</p>
+          : <ul class="metric-list">
+              {(topPages as any[]).map((p: any) => (
+                <li class="metric-item">
+                  <span class="metric-name">{p.x?.replace('/posts/', '') || p.x}</span>
+                  <span class="metric-count">{p.y}</span>
+                </li>
+              ))}
+            </ul>
+        }
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Traffic sources · 30 days</p>
+        {(referrers as any[]).length === 0
+          ? <p class="empty">No data yet.</p>
+          : <ul class="metric-list">
+              {(referrers as any[]).map((r: any) => (
+                <li class="metric-item">
+                  <span class="metric-name">{r.x || 'Direct'}</span>
+                  <span class="metric-count">{r.y}</span>
+                </li>
+              ))}
+            </ul>
+        }
+      </div>
+    </div>
+
+    <!-- Row 3: Questions (full width) + Cities -->
+    <div class="grid-3">
+      <div class="panel">
+        <p class="panel-title">
+          Recent questions
+          {pendingQuestions.length > 0 &&
+            <span class="badge badge-new" style="margin-left:0.5rem;">{pendingQuestions.length} pending</span>
+          }
+        </p>
+        {(airtableQuestions as any[]).length === 0
+          ? <p class="empty">No questions yet.</p>
+          : <ul class="question-list">
+              {(airtableQuestions as any[]).map((q: any) => {
+                const f = q.fields ?? {};
+                const status = !f.Valid ? 'filtered' : f.Status === 'new' ? 'new' : 'valid';
+                return (
+                  <li class="question-item">
+                    <div class="question-meta">
+                      <span class={`badge badge-${status}`}>{status}</span>
+                      {f.Name && <span class="question-from">{f.Name}</span>}
+                      {f.Date && <span class="question-from">{new Date(f.Date).toLocaleDateString('en-CA')}</span>}
+                    </div>
+                    <p class="question-text">{f.Question}</p>
+                  </li>
+                );
+              })}
+            </ul>
+        }
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Cities · 30 days</p>
+        {(cities as any[]).length === 0
+          ? <p class="empty">No data yet.</p>
+          : <ul class="metric-list">
+              {(cities as any[]).map((c: any) => (
+                <li class="metric-item">
+                  <span class="metric-name">{c.x || 'Unknown'}</span>
+                  <span class="metric-count">{c.y}</span>
+                </li>
+              ))}
+            </ul>
+        }
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Questions this week</p>
+        <div class="stat-value" style="margin-bottom:1rem;">
+          {(airtableQuestions as any[]).filter((q: any) =>
+            new Date(q.fields?.Date).getTime() > day7
+          ).length}
+        </div>
+        <p class="panel-title" style="margin-top:1rem;">Filtered (trolls)</p>
+        <div class="stat-value" style="color:var(--text-secondary); font-size:1.5rem;">
+          {(airtableQuestions as any[]).filter((q: any) => !q.fields?.Valid).length}
+          <span style="font-size:0.8rem; font-weight:400;"> / {(airtableQuestions as any[]).length}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Apply saved theme
+    const theme = localStorage.getItem('hah-theme') ??
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  </script>
+</body>
+</html>
