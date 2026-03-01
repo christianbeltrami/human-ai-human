@@ -9,9 +9,10 @@ interface Props {
   tags?: string[];
   lang?: 'fr' | 'en';
   excerpt?: string;
+  author?: string;
 }
 
-const { title, date, tags = [], lang = 'fr', excerpt } = Astro.props;
+const { title, date, tags = [], lang = 'fr', excerpt, author } = Astro.props;
 
 const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-CA' : 'en-CA', {
   year: 'numeric',
@@ -30,6 +31,7 @@ const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-CA' : 'en-CA',
         {lang && (
           <span class="lang-badge">{lang.toUpperCase()}</span>
         )}
+        {author && <span style="color:var(--text-secondary);">{author}</span>}
         {tags.length > 0 && (
           <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
             {tags.map(tag => <TagPill tag={tag} />)}

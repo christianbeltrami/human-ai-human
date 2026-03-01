@@ -8,6 +8,7 @@ const posts = defineCollection({
     lang: z.enum(['fr', 'en']).default('fr'),
     tags: z.array(z.string()).default([]),
     excerpt: z.string().optional(),
+    author: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });
