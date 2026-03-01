@@ -73,7 +73,7 @@ function postsFromLastDays(items, days = 7) {
 // ── 2. Format email HTML ──────────────────────────────────
 
 function formatDigestHTML(posts) {
-  const today = new Intl.DateTimeFormat('fr-CA', {
+  const today = new Intl.DateTimeFormat('en-CA', {
     year: 'numeric', month: 'long', day: 'numeric',
   }).format(new Date());
 
@@ -86,7 +86,7 @@ function formatDigestHTML(posts) {
         ${post.description
           ? `<p style="margin: 0 0 10px 0; font-family: Georgia, serif; font-size: 15px; color: #5A5A5A; line-height: 1.6;">${post.description}</p>`
           : ''}
-        <a href="${post.link}" style="font-family: Georgia, serif; font-size: 14px; color: #C73019; text-decoration: none;">Lire l'article →</a>
+        <a href="${post.link}" style="font-family: Georgia, serif; font-size: 14px; color: #C73019; text-decoration: none;">Read article →</a>
       </td>
     </tr>
   `).join('');
@@ -110,7 +110,7 @@ function formatDigestHTML(posts) {
                 <span style="color:#F93C20;">——▶</span>&nbsp; human
               </p>
               <p style="margin: 8px 0 0; font-family: Georgia, serif; font-size: 13px; color: #5A5A5A;">
-                Digest hebdomadaire · ${today}
+                Weekly digest · ${today}
               </p>
             </td>
           </tr>
@@ -130,7 +130,7 @@ function formatDigestHTML(posts) {
               <p style="margin:0; font-family: Georgia, serif; font-size: 13px; color: #5A5A5A;">
                 <a href="${SITE_URL}" style="color:#C73019;">${SITE_URL.replace('https://www.','')}</a>
                 &nbsp;·&nbsp;
-                <a href="{{ unsubscribe }}" style="color: #5A5A5A;">Se désabonner</a>
+                <a href="{{ unsubscribe }}" style="color: #5A5A5A;">Unsubscribe</a>
               </p>
             </td>
           </tr>
@@ -187,7 +187,7 @@ async function createBrevoDraft(subject, html) {
     process.exit(0);
   }
 
-  const today = new Date().toLocaleDateString('fr-CA');
+  const today = new Date().toLocaleDateString('en-CA');
   const subject = recentPosts.length === 1
     ? `${recentPosts[0].title} — human-ai-human`
     : `Digest ${today} — ${recentPosts.length} nouveaux articles`;
