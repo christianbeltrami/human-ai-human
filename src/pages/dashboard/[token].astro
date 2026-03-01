@@ -372,8 +372,22 @@ const today = new Intl.DateTimeFormat('en-CA', {
       </div>
     </div>
 
-    <!-- Row 3: Questions (full width) + Cities -->
-    <div class="grid-3">
+    <!-- Row 3: Troll stats | Questions | Cities -->
+    <div class="grid-3" style="grid-template-columns: 1fr 2fr 1fr;">
+      <div class="panel">
+        <p class="panel-title">Questions this week</p>
+        <div class="stat-value" style="margin-bottom:1rem;">
+          {(airtableQuestions as any[]).filter((q: any) =>
+            new Date(q.fields?.Date).getTime() > day7
+          ).length}
+        </div>
+        <p class="panel-title" style="margin-top:1rem;">Filtered (trolls)</p>
+        <div class="stat-value" style="color:var(--text-secondary); font-size:1.5rem;">
+          {(airtableQuestions as any[]).filter((q: any) => !q.fields?.Valid).length}
+          <span style="font-size:0.8rem; font-weight:400;"> / {(airtableQuestions as any[]).length}</span>
+        </div>
+      </div>
+
       <div class="panel">
         <p class="panel-title">
           Recent questions
@@ -415,20 +429,6 @@ const today = new Intl.DateTimeFormat('en-CA', {
               ))}
             </ul>
         }
-      </div>
-
-      <div class="panel">
-        <p class="panel-title">Questions this week</p>
-        <div class="stat-value" style="margin-bottom:1rem;">
-          {(airtableQuestions as any[]).filter((q: any) =>
-            new Date(q.fields?.Date).getTime() > day7
-          ).length}
-        </div>
-        <p class="panel-title" style="margin-top:1rem;">Filtered (trolls)</p>
-        <div class="stat-value" style="color:var(--text-secondary); font-size:1.5rem;">
-          {(airtableQuestions as any[]).filter((q: any) => !q.fields?.Valid).length}
-          <span style="font-size:0.8rem; font-weight:400;"> / {(airtableQuestions as any[]).length}</span>
-        </div>
       </div>
     </div>
 
