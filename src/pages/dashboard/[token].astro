@@ -2,6 +2,7 @@
 export const prerender = false;
 
 import '../../styles/global.css';
+import { getCollection } from 'astro:content';
 
 // ── Auth ──────────────────────────────────────────────────
 const { token } = Astro.params;
@@ -130,6 +131,17 @@ const totalSubscribers = brevoContacts?.totalSubscribers ?? '—';
 const pendingQuestions = (airtableQuestions as any[]).filter(
   (q: any) => q.fields?.Valid && q.fields?.Status === 'new'
 );
+
+// ── Popular tags from content collection ──────────────────
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const tagCounts: Record<string, number> = {};
+for (const post of allPosts) {
+  for (const tag of post.data.tags ?? []) {
+    tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
+  }
+}
+const popularTags = Object.entries(tagCounts)
+  .sort((a, b) => b[1] - a[1]);
 
 const today = new Intl.DateTimeFormat('en-CA', {
   year: 'numeric', month: 'long', day: 'numeric',
@@ -338,6 +350,20 @@ const today = new Intl.DateTimeFormat('en-CA', {
         <div class="stat-value">{views30}</div>
       </div>
     </div>
+
+    <!-- Popular tags -->
+    {popularTags.length > 0 && (
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+        {popularTags.map(([tag, count]) => (
+          <a
+            href={`/tags/${tag}`}
+            style="font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:0.25em 0.65em; color:var(--text-secondary); text-decoration:none; white-space:nowrap;"
+          >
+            {tag} <span style="color:var(--accent); font-weight:700;">{count}</span>
+          </a>
+        ))}
+      </div>
+    )}
 
     <!-- Row 2: Top articles + Traffic sources -->
     <div class="grid-2">
