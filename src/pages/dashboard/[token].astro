@@ -124,8 +124,8 @@ const [
 ]);
 
 // ── Derived values ────────────────────────────────────────
-const views7  = stats7?.pageviews?.value  ?? '—';
-const views30 = stats30?.pageviews?.value ?? '—';
+const views7  = stats7?.pageviews  ?? '—';
+const views30 = stats30?.pageviews ?? '—';
 const totalSubscribers = brevoContacts?.totalSubscribers ?? '—';
 
 const pendingQuestions = (airtableQuestions as any[]).filter(
