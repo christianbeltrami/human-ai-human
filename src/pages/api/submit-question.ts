@@ -96,7 +96,6 @@ async function logToAirtable(payload: {
           Valid: payload.valid,
           FilterReason: payload.reason,
           Status: payload.valid ? 'new' : 'filtered',
-          Date: new Date().toISOString(),
         },
       }),
     });
