@@ -132,12 +132,17 @@ const pendingQuestions = (airtableQuestions as any[]).filter(
   (q: any) => q.fields?.Valid && q.fields?.Status === 'new'
 );
 
-// ── Popular tags from content collection ──────────────────
+// ── Popular tags weighted by page views ───────────────────
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
 const tagCounts: Record<string, number> = {};
 for (const post of allPosts) {
+  const slug = post.slug;
+  const views = (topPages as any[]).find(
+    (p: any) => p.x === `/posts/${slug}`
+  )?.y ?? 0;
+  const weight = views > 0 ? views : 1;
   for (const tag of post.data.tags ?? []) {
-    tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
+    tagCounts[tag] = (tagCounts[tag] ?? 0) + weight;
   }
 }
 const popularTags = Object.entries(tagCounts)
