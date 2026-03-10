@@ -8,10 +8,12 @@
       <rect x="0" y="0" width="32" height="32"/>
     </clipPath>
   </defs>
-  <!-- Crop to the arrow portion of the handwriting PNG (rightmost ~30%) -->
+  <!-- Arrow is roughly x=666-925, y=140-285 in the 925x303 PNG.
+       Scale so arrow fills 32x32: factor=0.124
+       Full image: 115x38. Offset: x=-83, y=-10 -->
   <image
     href="/images/human-handwriting.png"
-    x="-66" y="0" width="98" height="32"
+    x="-83" y="-10" width="115" height="38"
     filter="url(#ink-red)"
     clip-path="url(#arrow-crop)"
   />
