@@ -265,6 +265,38 @@ blockquote {
   border-bottom: none;
 }
 
+/* ── Current Courses ─────────────────────────────────────── */
+
+.courses-section {
+  margin: 2rem 0;
+}
+
+.courses-section h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.courses-section p {
+  margin-bottom: 0.75rem;
+}
+
+.course-link {
+  display: inline-block;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 1px;
+  transition: opacity 0.15s;
+}
+
+.course-link:hover {
+  opacity: 0.75;
+}
+
 /* ── Post Article ────────────────────────────────────────── */
 
 .post-header {
