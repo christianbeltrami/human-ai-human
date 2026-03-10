@@ -332,7 +332,25 @@ const today = new Intl.DateTimeFormat('en-CA', {
 
     <!-- Header -->
     <div class="dash-header">
-      <p class="dash-title">Human ——▶ AI ——▶ Human &nbsp;·&nbsp; Dashboard</p>
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <svg viewBox="0 0 362 68" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:180px; display:block;">
+          <defs>
+            <filter id="ink-red-dash" color-interpolation-filters="sRGB">
+              <feFlood flood-color="#F93C20" result="color"/>
+              <feComposite in="color" in2="SourceGraphic" operator="in"/>
+            </filter>
+            <clipPath id="human-only-dash">
+              <rect x="252" y="0" width="103" height="68"/>
+            </clipPath>
+          </defs>
+          <image href="/images/human-handwriting.png" x="0" y="8" width="159" height="52" filter="url(#ink-red-dash)"/>
+          <text x="163" y="49" font-family="'Noto Serif', ui-serif, Georgia, serif" font-size="22" font-weight="700" fill="#F93C20">AI</text>
+          <line x1="201" y1="41" x2="232" y2="41" stroke="#F93C20" stroke-width="1.5"/>
+          <polygon points="232,36 244,41 232,46" fill="#F93C20"/>
+          <image href="/images/human-handwriting.png" x="252" y="8" width="159" height="52" filter="url(#ink-red-dash)" clip-path="url(#human-only-dash)"/>
+        </svg>
+        <span class="dash-title">· Dashboard</span>
+      </div>
       <span class="dash-date">{today}</span>
     </div>
 
