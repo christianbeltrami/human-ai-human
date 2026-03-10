@@ -351,23 +351,20 @@ const today = new Intl.DateTimeFormat('en-CA', {
       </div>
     </div>
 
-    <!-- Popular tags -->
-    {popularTags.length > 0 && (
-      <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
-        {popularTags.map(([tag, count]) => (
-          <a
-            href={`/tags/${tag}`}
-            style="font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:0.25em 0.65em; color:var(--text-secondary); text-decoration:none; white-space:nowrap;"
-          >
-            {tag} <span style="color:var(--accent); font-weight:700;">{count}</span>
-          </a>
-        ))}
-      </div>
-    )}
-
     <!-- Row 2: Top articles + Traffic sources -->
     <div class="grid-2">
       <div class="panel">
+        <p class="panel-title">Top tags</p>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+          {popularTags.map(([tag, count]) => (
+            <a
+              href={`/tags/${tag}`}
+              style="font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:0.25em 0.65em; color:var(--text-secondary); text-decoration:none; white-space:nowrap;"
+            >
+              {tag} <span style="color:var(--accent); font-weight:700;">{count}</span>
+            </a>
+          ))}
+        </div>
         <p class="panel-title">Top articles · 30 days</p>
         {(topPages as any[]).length === 0
           ? <p class="empty">No data yet — check Umami API key.</p>
