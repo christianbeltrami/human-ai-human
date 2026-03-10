@@ -321,6 +321,10 @@ blockquote {
   margin-top: 2rem;
 }
 
+.post-signature {
+  margin-top: 3rem;
+}
+
 /* ── Tag Pills ───────────────────────────────────────────── */
 
 .tag-pill {

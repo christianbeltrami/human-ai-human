@@ -1,0 +1,21 @@
+---
+// ChristianSignature — handwritten "Christian" signature
+---
+<img
+  src="/images/christian-signature.png"
+  alt="Christian"
+  class="christian-signature"
+/>
+
+<style>
+  .christian-signature {
+    display: block;
+    width: 240px;
+    mix-blend-mode: multiply;
+  }
+
+  :global([data-theme="dark"]) .christian-signature {
+    mix-blend-mode: screen;
+    filter: invert(1);
+  }
+</style>

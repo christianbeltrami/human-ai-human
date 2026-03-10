@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import TagPill from '../components/TagPill.astro';
 import SubscribeInline from '../components/SubscribeInline.astro';
+import ChristianSignature from '../components/ChristianSignature.astro';
 
 interface Props {
   title: string;
@@ -42,6 +43,10 @@ const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-CA' : 'en-CA',
 
     <div class="post-body">
       <slot />
+    </div>
+
+    <div class="post-signature" aria-hidden="true">
+      <ChristianSignature />
     </div>
 
     <SubscribeInline />

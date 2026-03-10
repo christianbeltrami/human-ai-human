@@ -27,3 +27,5 @@ tina/__generated__/
 
 # Claude Code local settings
 .claude/
+.vercel
+.env*.local
