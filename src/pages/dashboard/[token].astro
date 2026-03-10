@@ -315,8 +315,9 @@ const today = new Intl.DateTimeFormat('en-CA', {
       border-radius: 3px;
       text-transform: uppercase;
     }
-    .badge-new    { background: var(--accent); color: #fff; }
-    .badge-valid  { background: var(--border); color: var(--text-secondary); }
+    .badge-new      { background: var(--accent); color: #fff; }
+    .badge-answered { background: #2a7a4b; color: #fff; }
+    .badge-archived { background: var(--border); color: var(--text-secondary); }
     .badge-filtered { background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); }
 
     .empty { color: var(--text-secondary); font-size: 0.875rem; font-style: italic; }
@@ -446,7 +447,7 @@ const today = new Intl.DateTimeFormat('en-CA', {
           : <ul class="question-list">
               {(airtableQuestions as any[]).map((q: any) => {
                 const f = q.fields ?? {};
-                const status = !f.Valid ? 'filtered' : f.Status === 'new' ? 'new' : 'valid';
+                const status = !f.Valid ? 'filtered' : ['new','answered','archived'].includes(f.Status) ? f.Status : 'new';
                 return (
                   <li class="question-item">
                     <div class="question-meta">
