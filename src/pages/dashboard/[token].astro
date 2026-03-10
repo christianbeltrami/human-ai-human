@@ -404,7 +404,7 @@ const today = new Intl.DateTimeFormat('en-CA', {
         <p class="panel-title">Questions this week</p>
         <div class="stat-value" style="margin-bottom:1rem;">
           {(airtableQuestions as any[]).filter((q: any) =>
-            new Date(q.fields?.Date).getTime() > day7
+            new Date(q.createdTime).getTime() > day7
           ).length}
         </div>
         <p class="panel-title" style="margin-top:1rem;">Filtered (trolls)</p>
