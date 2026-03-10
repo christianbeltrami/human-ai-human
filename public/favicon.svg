@@ -1,4 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <line x1="2" y1="16" x2="22" y2="16" stroke="#F93C20" stroke-width="4" stroke-linecap="round"/>
-  <polygon points="20,8 30,16 20,24" fill="#F93C20"/>
+  <defs>
+    <filter id="ink-red" color-interpolation-filters="sRGB">
+      <feFlood flood-color="#F93C20" result="color"/>
+      <feComposite in="color" in2="SourceGraphic" operator="in"/>
+    </filter>
+    <clipPath id="arrow-crop">
+      <rect x="0" y="0" width="32" height="32"/>
+    </clipPath>
+  </defs>
+  <!-- Crop to the arrow portion of the handwriting PNG (rightmost ~30%) -->
+  <image
+    href="/images/human-handwriting.png"
+    x="-66" y="0" width="98" height="32"
+    filter="url(#ink-red)"
+    clip-path="url(#arrow-crop)"
+  />
 </svg>
