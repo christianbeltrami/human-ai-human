@@ -391,12 +391,12 @@ const today = new Intl.DateTimeFormat('en-CA', {
           ))}
         </div>
         <p class="panel-title">Top articles · 30 days</p>
-        {(topPages as any[]).length === 0
-          ? <p class="empty">No data yet — check Umami API key.</p>
+        {(topPages as any[]).filter((p: any) => p.x?.startsWith('/posts/')).length === 0
+          ? <p class="empty">No article views yet.</p>
           : <ul class="metric-list">
-              {(topPages as any[]).map((p: any) => (
+              {(topPages as any[]).filter((p: any) => p.x?.startsWith('/posts/')).map((p: any) => (
                 <li class="metric-item">
-                  <span class="metric-name">{p.x?.replace('/posts/', '') || p.x}</span>
+                  <span class="metric-name">{p.x.replace('/posts/', '')}</span>
                   <span class="metric-count">{p.y}</span>
                 </li>
               ))}
