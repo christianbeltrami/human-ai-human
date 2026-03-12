@@ -202,7 +202,7 @@ blockquote::before {
   display: block;
   position: absolute;
   top: 0.5em;
-  left: -0.75em;
+  left: -1.5em;
   width: 67px;
   height: 67px;
   background-color: var(--accent);
