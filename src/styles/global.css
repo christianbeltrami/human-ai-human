@@ -201,10 +201,10 @@ blockquote::before {
   content: '';
   display: block;
   position: absolute;
-  top: -0.25em;
-  left: 0;
-  width: 58px;
-  height: 58px;
+  top: 0.5em;
+  left: -0.75em;
+  width: 67px;
+  height: 67px;
   background-color: var(--accent);
   -webkit-mask-image: url('/images/quote-higher-left.png');
   mask-image: url('/images/quote-higher-left.png');
