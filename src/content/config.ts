@@ -10,6 +10,7 @@ const posts = defineCollection({
     excerpt: z.string().optional(),
     author: z.string().optional(),
     draft: z.boolean().default(false),
+    hideSignature: z.boolean().default(false),
   }),
 });
 

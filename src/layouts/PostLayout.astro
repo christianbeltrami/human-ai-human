@@ -11,9 +11,10 @@ interface Props {
   lang?: 'fr' | 'en';
   excerpt?: string;
   author?: string;
+  hideSignature?: boolean;
 }
 
-const { title, date, tags = [], lang = 'fr', excerpt, author } = Astro.props;
+const { title, date, tags = [], lang = 'fr', excerpt, author, hideSignature = false } = Astro.props;
 
 const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-CA' : 'en-CA', {
   year: 'numeric',
@@ -45,9 +46,11 @@ const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-CA' : 'en-CA',
       <slot />
     </div>
 
-    <div class="post-signature" aria-hidden="true">
-      <ChristianSignature />
-    </div>
+    {!hideSignature && (
+      <div class="post-signature" aria-hidden="true">
+        <ChristianSignature />
+      </div>
+    )}
 
     <SubscribeInline />
   </article>
