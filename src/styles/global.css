@@ -189,11 +189,46 @@ li { margin-bottom: 0.35em; }
 /* ── Blockquote ──────────────────────────────────────────── */
 
 blockquote {
-  border-left: 3px solid var(--accent);
-  padding-left: 1.25em;
+  border-left: none;
+  position: relative;
+  padding: 1.5em 1em 1.5em 1em;
   margin: 1.5em 0;
   color: var(--text-secondary);
   font-style: italic;
+}
+
+blockquote::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -0.25em;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  background-color: var(--accent);
+  -webkit-mask-image: url('/images/quote-higher-left.png');
+  mask-image: url('/images/quote-higher-left.png');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+blockquote::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: -0.25em;
+  right: 0;
+  width: 48px;
+  height: 48px;
+  background-color: var(--accent);
+  -webkit-mask-image: url('/images/quote-lower-right.png');
+  mask-image: url('/images/quote-lower-right.png');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 /* ── Site Header ─────────────────────────────────────────── */
