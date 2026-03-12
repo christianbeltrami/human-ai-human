@@ -214,14 +214,13 @@ blockquote::before {
   mask-repeat: no-repeat;
 }
 
-blockquote::after {
+blockquote p:last-child::after {
   content: '';
-  display: block;
-  position: absolute;
-  bottom: -0.25em;
-  right: 0;
+  display: inline-block;
   width: 48px;
   height: 48px;
+  margin-left: 0.2em;
+  vertical-align: -0.6em;
   background-color: var(--accent);
   -webkit-mask-image: url('/images/quote-lower-right.png');
   mask-image: url('/images/quote-lower-right.png');
