@@ -158,7 +158,14 @@ pre code {
 
 hr {
   border: none;
-  border-top: 1px solid var(--border);
+  height: 18px;
+  background-color: var(--accent);
+  -webkit-mask-image: url('/images/seperation.png');
+  mask-image: url('/images/seperation.png');
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   margin: 2.5em 0;
 }
 
