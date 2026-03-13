@@ -34,10 +34,13 @@ async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
 
 // ── Fetch all data in parallel ────────────────────────────
 
+const siteStart = new Date('2025-01-01').getTime();
+
 const [
   stats7,
   stats1,
   topPages,
+  topPagesAllTime,
   referrers,
   cities,
   brevoContacts,
@@ -63,28 +66,37 @@ const [
     return r.ok ? r.json() : null;
   }, null),
 
-  // Top pages 30d
+  // Top pages 7d (for tag weighting)
   safe(async () => {
     const r = await fetch(
-      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=url&startAt=${day30}&endAt=${now}&limit=100`,
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=url&startAt=${day7}&endAt=${now}&limit=100`,
       { headers: umamiHeaders() }
     );
     return r.ok ? r.json() : [];
   }, []),
 
-  // Referrers 30d
+  // Top pages all time
   safe(async () => {
     const r = await fetch(
-      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=referrer&startAt=${day30}&endAt=${now}&limit=6`,
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=url&startAt=${siteStart}&endAt=${now}&limit=100`,
       { headers: umamiHeaders() }
     );
     return r.ok ? r.json() : [];
   }, []),
 
-  // Cities 30d
+  // Referrers 7d
   safe(async () => {
     const r = await fetch(
-      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=city&startAt=${day30}&endAt=${now}&limit=8`,
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=referrer&startAt=${day7}&endAt=${now}&limit=6`,
+      { headers: umamiHeaders() }
+    );
+    return r.ok ? r.json() : [];
+  }, []),
+
+  // Cities 7d
+  safe(async () => {
+    const r = await fetch(
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/metrics?type=city&startAt=${day7}&endAt=${now}&limit=8`,
       { headers: umamiHeaders() }
     );
     return r.ok ? r.json() : [];
@@ -390,11 +402,23 @@ const today = new Intl.DateTimeFormat('en-CA', {
             </a>
           ))}
         </div>
-        <p class="panel-title">Top articles · 30 days</p>
+        <p class="panel-title">Top articles · 7 days</p>
         {(topPages as any[]).filter((p: any) => p.x?.startsWith('/posts/')).length === 0
           ? <p class="empty">No article views yet.</p>
           : <ul class="metric-list">
               {(topPages as any[]).filter((p: any) => p.x?.startsWith('/posts/')).map((p: any) => (
+                <li class="metric-item">
+                  <span class="metric-name">{p.x.replace('/posts/', '')}</span>
+                  <span class="metric-count">{p.y}</span>
+                </li>
+              ))}
+            </ul>
+        }
+        <p class="panel-title" style="margin-top:1.25rem;">Top articles · all time</p>
+        {(topPagesAllTime as any[]).filter((p: any) => p.x?.startsWith('/posts/')).length === 0
+          ? <p class="empty">No article views yet.</p>
+          : <ul class="metric-list">
+              {(topPagesAllTime as any[]).filter((p: any) => p.x?.startsWith('/posts/')).map((p: any) => (
                 <li class="metric-item">
                   <span class="metric-name">{p.x.replace('/posts/', '')}</span>
                   <span class="metric-count">{p.y}</span>
