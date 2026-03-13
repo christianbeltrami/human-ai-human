@@ -21,8 +21,8 @@ const AT_BASE    = import.meta.env.AIRTABLE_BASE_ID    ?? '';
 const AT_TABLE   = import.meta.env.AIRTABLE_TABLE_ID   ?? 'Questions';
 
 const now   = Date.now();
+const day1  = now - 1  * 86400000;
 const day7  = now - 7  * 86400000;
-const day30 = now - 30 * 86400000;
 
 function umamiHeaders() {
   return { 'x-umami-api-key': UMAMI_KEY };
@@ -36,7 +36,7 @@ async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
 
 const [
   stats7,
-  stats30,
+  stats1,
   topPages,
   referrers,
   cities,
@@ -54,10 +54,10 @@ const [
     return r.ok ? r.json() : null;
   }, null),
 
-  // Umami stats 30d
+  // Umami stats 24h
   safe(async () => {
     const r = await fetch(
-      `https://api.umami.is/v1/websites/${UMAMI_ID}/stats?startAt=${day30}&endAt=${now}`,
+      `https://api.umami.is/v1/websites/${UMAMI_ID}/stats?startAt=${day1}&endAt=${now}`,
       { headers: umamiHeaders() }
     );
     return r.ok ? r.json() : null;
@@ -107,7 +107,7 @@ const [
     );
     if (!r.ok) return 0;
     const d = await r.json();
-    return d?.contacts?.length ?? 0;
+    return Math.max(0, (d?.contacts?.length ?? 0) - 1);
   }, 0),
 
   // Airtable recent questions (last 20)
@@ -124,9 +124,9 @@ const [
 ]);
 
 // ── Derived values ────────────────────────────────────────
-const views7  = stats7?.visitors  ?? '—';
-const views30 = stats30?.visitors ?? '—';
-const totalSubscribers = brevoContacts?.totalSubscribers ?? '—';
+const views7  = stats7?.visitors ?? '—';
+const views1  = stats1?.visitors ?? '—';
+const totalSubscribers = brevoContacts?.totalSubscribers != null ? brevoContacts.totalSubscribers - 1 : '—';
 
 const pendingQuestions = (airtableQuestions as any[]).filter(
   (q: any) => q.fields?.Valid && q.fields?.Status === 'new'
@@ -371,8 +371,8 @@ const today = new Intl.DateTimeFormat('en-CA', {
         <div class="stat-value">{views7}</div>
       </a>
       <a class="stat-card" href="https://cloud.umami.is/" target="_blank" rel="noopener" style="text-decoration:none; display:block;">
-        <div class="stat-label">Unique visitors · 30 days</div>
-        <div class="stat-value">{views30}</div>
+        <div class="stat-label">Unique visitors · 24 hours</div>
+        <div class="stat-value">{views1}</div>
       </a>
     </div>
 
