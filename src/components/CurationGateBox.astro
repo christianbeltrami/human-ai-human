@@ -5,14 +5,12 @@ interface Props {
 
 const { variant = 'full' } = Astro.props;
 
-const longText = "Human Human is where I teach and develop ideas. Curation Gate is where I publish the weekly signal: AI, creativity, authorship, and the frameworks shaping creative work.";
-const shortText = "For weekly signals on AI, creativity, authorship, and creative systems, subscribe to Curation Gate.";
+const description = "The Curation Gate is a weekly passage through the signals shaping AI creativity: emerging tools, cultural shifts, production workflows, and new forms of human authorship.";
 ---
 
 {variant === 'full' ? (
   <div class="cg-box">
-    <h3 class="cg-title">Curation Gate</h3>
-    <p class="cg-text">{longText}</p>
+    <p class="cg-text">{description}</p>
     <div class="cg-embed">
       <script
         is:inline
@@ -28,7 +26,7 @@ const shortText = "For weekly signals on AI, creativity, authorship, and creativ
   </div>
 ) : (
   <div class="cg-inline">
-    <p class="cg-text-inline">{shortText}</p>
+    <p class="cg-text-inline">{description}</p>
     <div class="cg-embed">
       <script
         is:inline
@@ -51,12 +49,6 @@ const shortText = "For weekly signals on AI, creativity, authorship, and creativ
     border-radius: 6px;
     padding: 1.5rem 1.5rem 1.75rem;
     margin: 2rem 0;
-  }
-  .cg-title {
-    font-family: var(--font-serif);
-    font-size: 1.1rem;
-    color: var(--accent);
-    margin: 0 0 0.6rem 0;
   }
   .cg-text {
     font-family: var(--font-serif);
