@@ -6,19 +6,29 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  seoTitle?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  lang?: 'fr' | 'en';
 }
 
 const {
   title = 'human-ai-human',
   description = 'Notes on creative AI, cinema, and human collaboration — by Christian Beltrami.',
   ogImage = '/og-default.png',
+  seoTitle,
+  publishedTime,
+  modifiedTime,
+  lang = 'fr',
 } = Astro.props;
 
-const siteTitle = title === 'human-ai-human' ? title : `${title} — human-ai-human`;
+const defaultSiteTitle = title === 'human-ai-human' ? title : `${title} — human-ai-human`;
+const siteTitle = seoTitle ?? defaultSiteTitle;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogType = publishedTime ? 'article' : 'website';
 ---
 <!DOCTYPE html>
-<html lang="fr">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -30,8 +40,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={siteTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalURL} />
+    {publishedTime && (
+      <meta property="article:published_time" content={new Date(publishedTime).toISOString()} />
+    )}
+    {modifiedTime && (
+      <meta property="article:modified_time" content={new Date(modifiedTime).toISOString()} />
+    )}
 
     <!-- RSS -->
     <link rel="alternate" type="application/rss+xml" title="human-ai-human RSS" href="/rss.xml" />
@@ -40,6 +56,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <script defer src="https://cloud.umami.is/script.js" data-website-id="60475f9b-09ca-4103-b1d9-5f69864411e5"></script>
 
     <title>{siteTitle}</title>
+    <slot name="head" />
   </head>
   <body>
     <div class="container">
@@ -53,6 +70,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             <a href="/#questions" style="font-size:0.75rem; color:var(--text-secondary);">Ask a question</a>
             <a href="/merch" style="font-size:0.75rem; color:var(--text-secondary);">Merch</a>
             <a href="/courses" style="font-size:0.75rem; color:var(--text-secondary);">Current Courses</a>
+            <a href="/posts/free-open-ai-video-generators-student-guide" style="font-size:0.75rem; color:var(--text-secondary);">Resources</a>
           </div>
           <button
             class="theme-toggle"

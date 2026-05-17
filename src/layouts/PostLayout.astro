@@ -12,17 +12,41 @@ interface Props {
   excerpt?: string;
   author?: string;
   hideSignature?: boolean;
+  seoTitle?: string;
+  description?: string;
+  modified?: Date;
 }
 
-const { title, date, tags = [], lang = 'fr', excerpt, author, hideSignature = false } = Astro.props;
+const {
+  title,
+  date,
+  tags = [],
+  lang = 'fr',
+  excerpt,
+  author,
+  hideSignature = false,
+  seoTitle,
+  description,
+  modified,
+} = Astro.props;
 
 const formattedDate = new Intl.DateTimeFormat(lang === 'fr' ? 'fr-CA' : 'en-CA', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
 }).format(new Date(date));
+
+const metaDescription = description ?? excerpt;
 ---
-<BaseLayout title={title} description={excerpt}>
+<BaseLayout
+  title={title}
+  description={metaDescription}
+  seoTitle={seoTitle}
+  publishedTime={date}
+  modifiedTime={modified ?? date}
+  lang={lang}
+>
+  <slot name="head" slot="head" />
   <article>
     <a href="/" class="back-link">← All articles</a>
 

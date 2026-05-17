@@ -11,6 +11,9 @@ const posts = defineCollection({
     author: z.string().optional(),
     draft: z.boolean().default(false),
     hideSignature: z.boolean().default(false),
+    seoTitle: z.string().optional(),
+    description: z.string().optional(),
+    modified: z.date().optional(),
   }),
 });
 

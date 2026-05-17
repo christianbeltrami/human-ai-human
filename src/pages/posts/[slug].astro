@@ -21,6 +21,9 @@ const { Content } = await post.render();
   excerpt={post.data.excerpt}
   author={post.data.author}
   hideSignature={post.data.hideSignature}
+  seoTitle={post.data.seoTitle}
+  description={post.data.description}
+  modified={post.data.modified}
 >
   <Content />
 </PostLayout>

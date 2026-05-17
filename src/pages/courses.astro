@@ -16,6 +16,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </a>
       <p class="course-dates">May 11 – June 1, 2026</p>
     </div>
+
+    <div class="course-resources">
+      <h2 class="course-resources-title">Student resources</h2>
+      <p class="course-resource-item">
+        <a href="/posts/free-open-ai-video-generators-student-guide" class="course-link">
+          AI video generator student guide
+        </a>
+        <span class="course-resource-desc"> — a practical guide and database of free, freemium, and open-source AI video tools, including credits, watermarks, commercial-use cautions, and local GPU requirements.</span>
+      </p>
+    </div>
   </div>
 </BaseLayout>
 
@@ -60,5 +70,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 0.9rem;
     color: var(--text-secondary);
     font-style: italic;
+  }
+
+  .course-resources {
+    max-width: 65ch;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .course-resources-title {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin: 0 0 1.25rem;
+  }
+
+  .course-resource-item {
+    margin: 0;
+  }
+
+  .course-resource-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
   }
 </style>

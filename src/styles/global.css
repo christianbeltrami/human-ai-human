@@ -363,6 +363,36 @@ blockquote::after {
   margin-top: 2rem;
 }
 
+.post-body table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.92rem;
+  width: 100%;
+}
+
+.post-body thead { display: table-header-group; }
+.post-body tbody { display: table-row-group; }
+.post-body tr { display: table-row; }
+
+.post-body th,
+.post-body td {
+  display: table-cell;
+  padding: 0.55em 0.85em;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.45;
+}
+
+.post-body th {
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 2px solid var(--border);
+  background: var(--surface);
+}
+
 .post-signature {
   margin-top: 3rem;
 }
