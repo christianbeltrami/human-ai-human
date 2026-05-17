@@ -29,3 +29,9 @@ tina/__generated__/
 .claude/
 .vercel
 .env*.local
+
+# Local-only working files (handoff briefs, raw asset drops, brand originals)
+instructions/
+dropped by christian/
+human-ai-human-logo-print.png
+human-ai-human-logo.svg
