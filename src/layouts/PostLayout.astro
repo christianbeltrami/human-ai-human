@@ -1,7 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import TagPill from '../components/TagPill.astro';
-import SubscribeInline from '../components/SubscribeInline.astro';
+import CurationGateBox from '../components/CurationGateBox.astro';
 import ChristianSignature from '../components/ChristianSignature.astro';
 
 interface Props {
@@ -76,6 +76,6 @@ const metaDescription = description ?? excerpt;
       </div>
     )}
 
-    <SubscribeInline />
+    <CurationGateBox variant="inline" />
   </article>
 </BaseLayout>

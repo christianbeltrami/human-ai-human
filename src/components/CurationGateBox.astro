@@ -1,0 +1,88 @@
+---
+interface Props {
+  variant?: 'full' | 'inline';
+}
+
+const { variant = 'full' } = Astro.props;
+
+const longText = "Human Human is where I teach and develop ideas. Curation Gate is where I publish the weekly signal: AI, creativity, authorship, and the frameworks shaping creative work.";
+const shortText = "For weekly signals on AI, creativity, authorship, and creative systems, subscribe to Curation Gate.";
+---
+
+{variant === 'full' ? (
+  <div class="cg-box">
+    <h3 class="cg-title">Curation Gate</h3>
+    <p class="cg-text">{longText}</p>
+    <div class="cg-embed">
+      <script
+        is:inline
+        src="https://cdn.jsdelivr.net/ghost/signup-form@~0.3/umd/signup-form.min.js"
+        data-label-1="source-human-human"
+        data-button-color="#7B5D8E"
+        data-button-text-color="#FFFFFF"
+        data-site="https://gate.continuumcreativity.ai/"
+        data-locale="en"
+        async
+      ></script>
+    </div>
+  </div>
+) : (
+  <div class="cg-inline">
+    <p class="cg-text-inline">{shortText}</p>
+    <div class="cg-embed">
+      <script
+        is:inline
+        src="https://cdn.jsdelivr.net/ghost/signup-form@~0.3/umd/signup-form.min.js"
+        data-label-1="source-human-human"
+        data-button-color="#7B5D8E"
+        data-button-text-color="#FFFFFF"
+        data-site="https://gate.continuumcreativity.ai/"
+        data-locale="en"
+        async
+      ></script>
+    </div>
+  </div>
+)}
+
+<style>
+  .cg-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem 1.5rem 1.75rem;
+    margin: 2rem 0;
+  }
+  .cg-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin: 0 0 0.6rem 0;
+  }
+  .cg-text {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text);
+    margin: 0 0 1.1rem 0;
+    max-width: 56ch;
+  }
+  .cg-inline {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .cg-text-inline {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0 0 0.9rem 0;
+    max-width: 56ch;
+  }
+  .cg-embed {
+    min-height: 58px;
+    max-width: 440px;
+    margin: 0;
+    width: 100%;
+  }
+</style>

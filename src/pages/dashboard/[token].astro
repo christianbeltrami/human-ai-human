@@ -15,7 +15,6 @@ if (!validToken || token !== validToken) {
 // ── Helpers ───────────────────────────────────────────────
 const UMAMI_ID   = import.meta.env.UMAMI_WEBSITE_ID   ?? '60475f9b-09ca-4103-b1d9-5f69864411e5';
 const UMAMI_KEY  = import.meta.env.UMAMI_API_KEY       ?? '';
-const BREVO_KEY  = import.meta.env.BREVO_API_KEY       ?? '';
 const AT_TOKEN   = import.meta.env.AIRTABLE_TOKEN      ?? '';
 const AT_BASE    = import.meta.env.AIRTABLE_BASE_ID    ?? '';
 const AT_TABLE   = import.meta.env.AIRTABLE_TABLE_ID   ?? 'Questions';
@@ -43,8 +42,6 @@ const [
   topPagesAllTime,
   referrers,
   cities,
-  brevoContacts,
-  brevoNew,
   airtableQuestions,
 ] = await Promise.all([
 
@@ -102,26 +99,6 @@ const [
     return r.ok ? r.json() : [];
   }, []),
 
-  // Brevo total contacts
-  safe(async () => {
-    const r = await fetch('https://api.brevo.com/v3/contacts/lists/3', {
-      headers: { 'api-key': BREVO_KEY }
-    });
-    return r.ok ? r.json() : null;
-  }, null),
-
-  // Brevo new subscribers this week
-  safe(async () => {
-    const since = new Date(day7).toISOString();
-    const r = await fetch(
-      `https://api.brevo.com/v3/contacts?limit=100&sort=desc&modifiedSince=${since}`,
-      { headers: { 'api-key': BREVO_KEY } }
-    );
-    if (!r.ok) return 0;
-    const d = await r.json();
-    return Math.max(0, (d?.contacts?.length ?? 0) - 1);
-  }, 0),
-
   // Airtable recent questions (last 20)
   safe(async () => {
     const url = `https://api.airtable.com/v0/${AT_BASE}/${encodeURIComponent(AT_TABLE)}?maxRecords=20&sort%5B0%5D%5Bfield%5D=Date&sort%5B0%5D%5Bdirection%5D=desc`;
@@ -138,7 +115,6 @@ const [
 // ── Derived values ────────────────────────────────────────
 const views7  = stats7?.visitors ?? '—';
 const views1  = stats1?.visitors ?? '—';
-const totalSubscribers = brevoContacts?.totalSubscribers != null ? brevoContacts.totalSubscribers - 1 : '—';
 
 const pendingQuestions = (airtableQuestions as any[]).filter(
   (q: any) => q.fields?.Valid && q.fields?.Status === 'new'
@@ -202,7 +178,7 @@ const today = new Intl.DateTimeFormat('en-CA', {
     /* Stat cards */
     .stat-row {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
       margin-bottom: 2rem;
     }
@@ -336,7 +312,7 @@ const today = new Intl.DateTimeFormat('en-CA', {
     .empty { color: var(--text-secondary); font-size: 0.875rem; font-style: italic; }
 
     @media (max-width: 900px) {
-      .stat-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-row { grid-template-columns: 1fr; }
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
     }
   </style>
@@ -370,14 +346,6 @@ const today = new Intl.DateTimeFormat('en-CA', {
 
     <!-- Row 1: Key numbers -->
     <div class="stat-row">
-      <a class="stat-card" href="https://app.brevo.com/contact/list/id/3" target="_blank" rel="noopener" style="text-decoration:none; display:block;">
-        <div class="stat-label">Subscribers</div>
-        <div class="stat-value large">{totalSubscribers}</div>
-      </a>
-      <a class="stat-card" href="https://app.brevo.com/contact/list/id/3" target="_blank" rel="noopener" style="text-decoration:none; display:block;">
-        <div class="stat-label">New this week</div>
-        <div class="stat-value large">{brevoNew}</div>
-      </a>
       <a class="stat-card" href="https://cloud.umami.is/" target="_blank" rel="noopener" style="text-decoration:none; display:block;">
         <div class="stat-label">Unique visitors · 24 hours</div>
         <div class="stat-value">{views1}</div>

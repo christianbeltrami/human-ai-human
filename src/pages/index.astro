@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
-import SubscribeBox from '../components/SubscribeBox.astro';
+import CurationGateBox from '../components/CurationGateBox.astro';
 import QuestionBox from '../components/QuestionBox.astro';
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
@@ -32,6 +32,6 @@ const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTim
   )}
 
   <hr />
-  <SubscribeBox />
+  <CurationGateBox variant="full" />
   <QuestionBox />
 </BaseLayout>
