@@ -4,9 +4,37 @@ interface Props {
 }
 
 const { curationGateUrl } = Astro.props;
+const gateSite = curationGateUrl.startsWith('http')
+  ? curationGateUrl
+  : 'https://gate.continuumcreativity.ai/';
 ---
 <aside class="cr-newsletter" data-newsletter hidden>
-  <p>Want more creative moves like this?</p>
-  <strong>Join the Curation Gate newsletter.</strong>
-  <a href={curationGateUrl}>Join Curation Gate</a>
+  <p>Want to understand why this works?</p>
+  <strong>AI Creativity Roulette gives you a creative move.</strong>
+  <span>Curation Gate gives you the thinking behind the move.</span>
+  <span>
+    Subscribe for a weekly filter on generative AI, creativity, authorship, and the tools,
+    workflows, and cultural shifts worth your attention.
+  </span>
+  <form
+    class="cr-newsletter-form"
+    action={gateSite}
+    method="get"
+    data-curation-gate-form
+    data-site={gateSite}
+    data-label="source-ai-creativity-roulette"
+    novalidate
+  >
+    <label class="sr-only" for="curation-gate-email">Email address</label>
+    <input
+      id="curation-gate-email"
+      type="email"
+      autocomplete="email"
+      placeholder="Your email address"
+      data-curation-gate-email
+      required
+    />
+    <button type="submit" data-curation-gate-submit>Join Curation Gate</button>
+    <p class="cr-newsletter-status" data-curation-gate-status role="status" aria-live="polite"></p>
+  </form>
 </aside>

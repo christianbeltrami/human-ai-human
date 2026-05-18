@@ -22,3 +22,10 @@ const { personalizationEnabled } = Astro.props;
   )}
 </div>
 <p class="cr-action-status" data-action-status role="status" aria-live="polite"></p>
+<textarea
+  class="cr-copy-fallback"
+  data-copy-fallback
+  readonly
+  hidden
+  aria-label="Manual copy text"
+></textarea>

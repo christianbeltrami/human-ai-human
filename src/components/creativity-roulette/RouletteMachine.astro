@@ -93,6 +93,11 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
   const copyPromptButton = app?.querySelector<HTMLButtonElement>('[data-copy-prompt]');
   const copyShareButton = app?.querySelector<HTMLButtonElement>('[data-copy-share]');
   const spinAgainButton = app?.querySelector<HTMLButtonElement>('[data-spin-again]');
+  const copyFallback = app?.querySelector<HTMLTextAreaElement>('[data-copy-fallback]');
+  const curationGateForm = app?.querySelector<HTMLFormElement>('[data-curation-gate-form]');
+  const curationGateEmail = app?.querySelector<HTMLInputElement>('[data-curation-gate-email]');
+  const curationGateSubmit = app?.querySelector<HTMLButtonElement>('[data-curation-gate-submit]');
+  const curationGateStatus = app?.querySelector<HTMLElement>('[data-curation-gate-status]');
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const reelSamples = {
@@ -142,6 +147,20 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
     if (actionStatus) actionStatus.textContent = message;
   }
 
+  function hideCopyFallback() {
+    if (!copyFallback) return;
+    copyFallback.value = '';
+    copyFallback.setAttribute('hidden', '');
+  }
+
+  function showCopyFallback(value: string) {
+    if (!copyFallback) return;
+    copyFallback.value = value;
+    copyFallback.removeAttribute('hidden');
+    copyFallback.focus();
+    copyFallback.select();
+  }
+
   function getTopic(): string {
     return normalizeTopic(topicInput?.value ?? '');
   }
@@ -163,6 +182,10 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
     element?.classList.toggle('has-landed', !spinning);
   }
 
+  function showNewsletter() {
+    newsletter?.removeAttribute('hidden');
+  }
+
   function cycleReel(reel: ReelName) {
     const samples = reelSamples[reel];
     let index = 0;
@@ -181,8 +204,9 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
 
     resultCard?.removeAttribute('hidden');
     emptyResult?.setAttribute('hidden', '');
-    newsletter?.removeAttribute('hidden');
+    showNewsletter();
     actions?.removeAttribute('hidden');
+    hideCopyFallback();
 
     text('[data-result-title]', result.move.label);
     text('[data-family-chip]', result.family.label);
@@ -276,23 +300,111 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
   }
 
   async function copyText(value: string, successMessage: string) {
+    const fallbackCopy = () => {
+      const temporary = document.createElement('textarea');
+      temporary.value = value;
+      temporary.setAttribute('readonly', '');
+      temporary.style.position = 'fixed';
+      temporary.style.top = '0';
+      temporary.style.left = '-9999px';
+      document.body.appendChild(temporary);
+      temporary.focus();
+      temporary.select();
+      temporary.setSelectionRange(0, temporary.value.length);
+      const copied = document.execCommand('copy');
+      temporary.remove();
+      return copied;
+    };
+
     try {
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(value);
+        try {
+          await navigator.clipboard.writeText(value);
+        } catch {
+          if (!fallbackCopy()) throw new Error('Clipboard unavailable');
+        }
       } else {
-        const temporary = document.createElement('textarea');
-        temporary.value = value;
-        temporary.setAttribute('readonly', '');
-        temporary.style.position = 'fixed';
-        temporary.style.left = '-9999px';
-        document.body.appendChild(temporary);
-        temporary.select();
-        document.execCommand('copy');
-        temporary.remove();
+        if (!fallbackCopy()) throw new Error('Clipboard unavailable');
       }
       setActionStatus(successMessage);
+      hideCopyFallback();
     } catch {
-      setActionStatus('Copy is unavailable here. Select the text manually.');
+      showCopyFallback(value);
+      setActionStatus('Copy is blocked here. The text is selected below.');
+    }
+  }
+
+  function setCurationGateStatus(message: string) {
+    if (curationGateStatus) curationGateStatus.textContent = message;
+  }
+
+  function buildCurationGateHistory() {
+    return [
+      {
+        time: Date.now(),
+        referrerSource: window.location.host,
+        referrerMedium: 'Embed',
+        referrerUrl: `${window.location.protocol}//${window.location.host}${window.location.pathname}`,
+      },
+    ];
+  }
+
+  function isValidEmail(email: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  async function subscribeToCurationGate(event: SubmitEvent) {
+    event.preventDefault();
+    const email = curationGateEmail?.value.trim() ?? '';
+
+    if (!email || !isValidEmail(email)) {
+      setCurationGateStatus('Enter a valid email address.');
+      curationGateEmail?.focus();
+      return;
+    }
+
+    const site = (curationGateForm?.dataset.site || 'https://gate.continuumcreativity.ai/').replace(/\/$/, '');
+    const label = curationGateForm?.dataset.label;
+    const labels = label ? [label] : [];
+
+    if (curationGateSubmit) curationGateSubmit.disabled = true;
+    setCurationGateStatus('Sending...');
+
+    try {
+      const integrityResponse = await fetch(`${site}/members/api/integrity-token/`, {
+        headers: {
+          'app-pragma': 'no-cache',
+          'x-ghost-version': '5.90',
+        },
+      });
+
+      if (!integrityResponse.ok) throw new Error('Missing integrity token');
+      const integrityToken = await integrityResponse.text();
+
+      const response = await fetch(`${site}/members/api/send-magic-link/`, {
+        method: 'POST',
+        headers: {
+          'app-pragma': 'no-cache',
+          'Content-Type': 'application/json',
+          'x-ghost-version': '5.47',
+        },
+        body: JSON.stringify({
+          email,
+          emailType: 'signup',
+          integrityToken,
+          labels,
+          urlHistory: buildCurationGateHistory(),
+        }),
+      });
+
+      if (!response.ok) throw new Error('Signup unavailable');
+
+      if (curationGateEmail) curationGateEmail.value = '';
+      setCurationGateStatus('Check your email to finish joining Curation Gate.');
+    } catch {
+      setCurationGateStatus('Signup is taking a break. Try again in a moment.');
+    } finally {
+      if (curationGateSubmit) curationGateSubmit.disabled = false;
     }
   }
 
@@ -375,6 +487,7 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
   copyPromptButton?.addEventListener('click', () => copyText(currentPrompt(), 'Prompt copied.'));
   copyShareButton?.addEventListener('click', copyShareLink);
   personalizeButton?.addEventListener('click', personalizeResult);
+  curationGateForm?.addEventListener('submit', subscribeToCurationGate);
 
   topicInput?.addEventListener('input', () => {
     updateCounter();
