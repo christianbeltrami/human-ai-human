@@ -225,16 +225,18 @@
   background: var(--surface);
   border: 1px solid color-mix(in srgb, var(--border) 72%, var(--text) 28%);
   border-radius: 6px;
-  display: grid;
-  grid-template-rows: repeat(3, minmax(5.15rem, auto));
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
 }
 
 .cr-reel {
   background: var(--surface);
-  display: grid;
-  grid-template-rows: auto minmax(2.55rem, auto);
-  min-height: 5.15rem;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-height: 5.35rem;
   overflow: visible;
   padding: 0.62rem 0.65rem 0.68rem;
   position: relative;
@@ -269,6 +271,7 @@
     inset 0 -1px 0 rgba(255, 255, 255, 0.6);
   color: var(--text);
   display: flex;
+  flex: 1 1 auto;
   min-height: 2.35rem;
   overflow: hidden;
   padding: 0.4rem 0.55rem;
@@ -654,7 +657,7 @@
   color: var(--text);
   display: grid;
   gap: 1.15rem;
-  grid-template-columns: minmax(0, 0.9fr) minmax(13rem, 0.75fr);
+  grid-template-columns: minmax(0, 0.82fr) minmax(16rem, 0.9fr);
   overflow: hidden;
   padding: 0.95rem;
 }
@@ -718,7 +721,7 @@
   display: flex;
   justify-content: center;
   margin: 0;
-  min-height: 14.5rem;
+  min-height: 17.5rem;
   padding-left: 1rem;
 }
 
@@ -726,9 +729,9 @@
   display: block;
   filter: drop-shadow(0 12px 16px rgba(28, 27, 24, 0.13));
   height: auto;
-  max-height: 17.5rem;
+  max-height: 21rem;
   object-fit: contain;
-  width: min(100%, 15.5rem);
+  width: min(100%, 18.5rem);
 }
 
 .cr-newsletter {
@@ -894,6 +897,21 @@
   }
 }
 
+@media (min-width: 781px) and (max-width: 1180px) {
+  .cr-guide-bridge {
+    grid-template-columns: minmax(0, 0.7fr) minmax(18rem, 1fr);
+  }
+
+  .cr-guide-mockup {
+    min-height: 20rem;
+  }
+
+  .cr-guide-mockup img {
+    max-height: 24rem;
+    width: min(100%, 21rem);
+  }
+}
+
 @media (max-width: 780px) {
   .cr-result-grid {
     grid-template-columns: 1fr;
@@ -906,9 +924,9 @@
   .cr-guide-mockup {
     border-left: 0;
     border-top: 1px solid var(--border);
-    min-height: 12rem;
+    min-height: 17rem;
     padding-left: 0;
-    padding-top: 0.75rem;
+    padding-top: 1rem;
   }
 }
 
@@ -928,8 +946,8 @@
   }
 
   .cr-guide-mockup img {
-    max-height: 13rem;
-    width: min(78vw, 13.5rem);
+    max-height: 19rem;
+    width: min(90vw, 19rem);
   }
 
   .cr-contact-link {
