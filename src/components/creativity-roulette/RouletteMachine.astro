@@ -54,6 +54,30 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
     </button>
 
     <p class="cr-machine-status" data-machine-status role="status" aria-live="polite">Ready to spin.</p>
+    <aside class="cr-machine-helper" aria-live="polite">
+      <div data-helper-initial>
+        <p>How it works</p>
+        <ol>
+          <li>Enter a topic if you want.</li>
+          <li>Choose Useful, Weird, or Wild.</li>
+          <li>Pull the lever.</li>
+          <li>Get a creative move.</li>
+        </ol>
+      </div>
+      <div data-helper-result hidden>
+        <p>How to use this move</p>
+        <ol>
+          <li>Read the move.</li>
+          <li>Copy the prompt.</li>
+          <li>Try one small version.</li>
+          <li>Come back and spin again.</li>
+        </ol>
+      </div>
+      <div data-helper-shared hidden>
+        <p>Shared spin</p>
+        <span>Someone shared this creative move with you. Use it as-is, or spin your own.</span>
+      </div>
+    </aside>
     <div class="sr-only" data-live-region aria-live="polite" aria-atomic="true"></div>
   </div>
 
@@ -92,6 +116,9 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
   const guideBridge = app?.querySelector<HTMLElement>('[data-guide-bridge]');
   const newsletter = app?.querySelector<HTMLElement>('[data-newsletter]');
   const sharedBadge = app?.querySelector<HTMLElement>('[data-shared-badge]');
+  const helperInitial = app?.querySelector<HTMLElement>('[data-helper-initial]');
+  const helperResult = app?.querySelector<HTMLElement>('[data-helper-result]');
+  const helperShared = app?.querySelector<HTMLElement>('[data-helper-shared]');
   const actions = app?.querySelector<HTMLElement>('[data-actions]');
   const actionStatus = app?.querySelector<HTMLElement>('[data-action-status]');
   const personalizeButton = app?.querySelector<HTMLButtonElement>('[data-personalize]');
@@ -128,6 +155,7 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
   let currentPersonalization: PersonalizedFields | null = null;
   let currentResultIsShared = false;
   let isSpinning = false;
+  let copyFeedbackTimer: number | undefined;
 
   const $ = (selector: string) => app?.querySelector(selector);
   const text = (selector: string, value: string) => {
@@ -152,6 +180,9 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
 
   function setMachineState(state: 'initial' | 'spinning' | 'result' | 'shared') {
     app?.setAttribute('data-machine-state', state);
+    helperInitial?.toggleAttribute('hidden', state !== 'initial' && state !== 'spinning');
+    helperResult?.toggleAttribute('hidden', state !== 'result');
+    helperShared?.toggleAttribute('hidden', state !== 'shared');
   }
 
   function setSpinButtonLabel(label: string) {
@@ -160,6 +191,15 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
 
   function setActionStatus(message: string) {
     if (actionStatus) actionStatus.textContent = message;
+  }
+
+  function setInlineCopyFeedback(message: string) {
+    if (!copyPromptInlineButton) return;
+    copyPromptInlineButton.textContent = message;
+    window.clearTimeout(copyFeedbackTimer);
+    copyFeedbackTimer = window.setTimeout(() => {
+      copyPromptInlineButton.textContent = 'Copy';
+    }, 1600);
   }
 
   function hideCopyFallback() {
@@ -291,7 +331,7 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
       renderResult(result, { shared: false });
       resultCard?.classList.add('is-visible');
       updateUrl(result, replaceUrl);
-      setStatus('Landed.');
+      setStatus('Creative move landed.');
       spinButton.disabled = false;
       isSpinning = false;
       return;
@@ -326,7 +366,7 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
       renderResult(result, { shared: false });
       resultCard?.classList.add('is-visible');
       updateUrl(result, replaceUrl);
-      setStatus('Landed.');
+      setStatus('Creative move landed.');
       spinButton.disabled = false;
       isSpinning = false;
     }, 2300);
@@ -361,9 +401,11 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
       }
       setActionStatus(successMessage);
       hideCopyFallback();
+      return true;
     } catch {
       showCopyFallback(value);
       setActionStatus('Copy is blocked here. The text is selected below.');
+      return false;
     }
   }
 
@@ -518,7 +560,10 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
   spinButton?.addEventListener('click', () => runSpin());
   spinAgainButton?.addEventListener('click', () => runSpin());
   copyPromptButton?.addEventListener('click', () => copyText(currentPrompt(), 'Prompt copied.'));
-  copyPromptInlineButton?.addEventListener('click', () => copyText(currentPrompt(), 'Prompt copied.'));
+  copyPromptInlineButton?.addEventListener('click', async () => {
+    const copied = await copyText(currentPrompt(), 'Prompt copied.');
+    setInlineCopyFeedback(copied ? 'Copied.' : 'Select');
+  });
   copyShareButton?.addEventListener('click', copyShareLink);
   personalizeButton?.addEventListener('click', personalizeResult);
   curationGateForm?.addEventListener('submit', subscribeToCurationGate);

@@ -37,11 +37,9 @@ const { personalizationEnabled } = Astro.props;
   </div>
 
   <div class="cr-result-section">
-    <div class="cr-prompt-heading">
-      <h3>Prompt to copy</h3>
-      <button class="cr-prompt-copy" type="button" data-copy-prompt-inline>Copy</button>
-    </div>
+    <h3>Prompt to copy</h3>
     <div class="cr-prompt-shell">
+      <button class="cr-prompt-copy" type="button" data-copy-prompt-inline>Copy</button>
       <div class="cr-prompt-box" data-prompt></div>
     </div>
   </div>
@@ -64,7 +62,10 @@ const { personalizationEnabled } = Astro.props;
   </div>
 
   <details class="cr-learn">
-    <summary>Learn why this works</summary>
+    <summary>
+      <span>Want the theory behind this move?</span>
+      <strong>Learn why this works</strong>
+    </summary>
     <p data-learn></p>
   </details>
 
