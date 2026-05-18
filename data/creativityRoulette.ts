@@ -1827,7 +1827,7 @@ export const creativityFamilies: CreativityFamily[] = [
         [
           move(
             "try-three-objectives",
-            "Try three objectives",
+            "Try three objective functions",
             ["useful"],
             "Optimize the idea three ways: efficiency-first, experience-first, and artistic-risk-first.",
             "Here is my idea: {{topic}}. Define three optimization strategies: efficiency-first, experience-first, and artistic-risk-first. For each, explain what it would improve, what it would sacrifice, and what kind of work it would produce.",

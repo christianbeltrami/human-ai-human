@@ -1,0 +1,16 @@
+---
+interface Props {
+  guideUrl: string;
+}
+
+const { guideUrl } = Astro.props;
+---
+<aside class="cr-guide-bridge" data-guide-bridge hidden>
+  <p class="cr-guide-kicker">From the guide</p>
+  <strong>This is one card from the AI Creativity guide.</strong>
+  <span>
+    The guide goes deeper into idea-space expansion, reframing, structure, synthesis,
+    iteration, co-creation, critique, friction, simulation, scale, and integrity.
+  </span>
+  <a href={guideUrl}>Read the full guide</a>
+</aside>

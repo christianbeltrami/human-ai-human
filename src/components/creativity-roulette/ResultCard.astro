@@ -8,7 +8,10 @@ interface Props {
 const { personalizationEnabled } = Astro.props;
 ---
 <section class="cr-result-card" data-result-card hidden aria-labelledby="cr-result-heading">
-  <div class="cr-result-kicker">Your creative move</div>
+  <div class="cr-result-heading-row">
+    <div class="cr-result-kicker">Your creative move</div>
+    <span class="cr-shared-badge" data-shared-badge hidden>Shared spin</span>
+  </div>
   <h2 id="cr-result-heading" data-result-title></h2>
 
   <div class="cr-chips" aria-label="Selected roulette combination">
@@ -34,8 +37,13 @@ const { personalizationEnabled } = Astro.props;
   </div>
 
   <div class="cr-result-section">
-    <h3>Prompt to copy</h3>
-    <div class="cr-prompt-box" data-prompt></div>
+    <div class="cr-prompt-heading">
+      <h3>Prompt to copy</h3>
+      <button class="cr-prompt-copy" type="button" data-copy-prompt-inline>Copy</button>
+    </div>
+    <div class="cr-prompt-shell">
+      <div class="cr-prompt-box" data-prompt></div>
+    </div>
   </div>
 
   <div class="cr-result-grid">
@@ -61,9 +69,4 @@ const { personalizationEnabled } = Astro.props;
   </details>
 
   <ShareButtons personalizationEnabled={personalizationEnabled} />
-</section>
-
-<section class="cr-empty-result" data-empty-result>
-  <p class="cr-empty-eyebrow">Ready when you are</p>
-  <p>The reels are quiet. The next move is waiting.</p>
 </section>
