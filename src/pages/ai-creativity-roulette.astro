@@ -8,7 +8,6 @@ const personalizationEnabled =
   Boolean(import.meta.env.OPENAI_API_KEY) &&
   Boolean(import.meta.env.OPENAI_MODEL);
 const curationGateUrl = import.meta.env.CURATION_GATE_URL || '/curation-gate';
-const aiCreativityGuideUrl = import.meta.env.AI_CREATIVITY_GUIDE_URL || '/ai-creativity';
 ---
 <BaseLayout
   title="AI Creativity Roulette"
@@ -31,7 +30,6 @@ const aiCreativityGuideUrl = import.meta.env.AI_CREATIVITY_GUIDE_URL || '/ai-cre
     <RouletteMachine
       personalizationEnabled={personalizationEnabled}
       curationGateUrl={curationGateUrl}
-      aiCreativityGuideUrl={aiCreativityGuideUrl}
     />
   </div>
 </BaseLayout>

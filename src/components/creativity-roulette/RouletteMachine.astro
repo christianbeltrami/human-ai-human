@@ -8,10 +8,9 @@ import ResultCard from './ResultCard.astro';
 interface Props {
   personalizationEnabled: boolean;
   curationGateUrl: string;
-  aiCreativityGuideUrl: string;
 }
 
-const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.props;
+const { personalizationEnabled, curationGateUrl } = Astro.props;
 ---
 <section
   class="cr-app"
@@ -83,7 +82,7 @@ const { personalizationEnabled, curationGateUrl, aiCreativityGuideUrl } = Astro.
 
   <div class="cr-result-panel">
     <ResultCard personalizationEnabled={personalizationEnabled} />
-    <GuideBridge guideUrl={aiCreativityGuideUrl} />
+    <GuideBridge />
     <NewsletterCTA curationGateUrl={curationGateUrl} />
   </div>
 </section>

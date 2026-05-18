@@ -1,16 +1,24 @@
----
-interface Props {
-  guideUrl: string;
-}
-
-const { guideUrl } = Astro.props;
----
 <aside class="cr-guide-bridge" data-guide-bridge hidden>
-  <p class="cr-guide-kicker">From the guide</p>
-  <strong>This is one card from the AI Creativity guide. The full guide explains the frameworks behind the moves.</strong>
-  <span>
-    The guide goes deeper into idea-space expansion, reframing, structure, synthesis,
-    iteration, co-creation, critique, friction, simulation, scale, and integrity.
-  </span>
-  <a href={guideUrl}>Read the full guide</a>
+  <div class="cr-guide-copy">
+    <p class="cr-guide-kicker">FROM THE CURRICULUM</p>
+    <strong>A studio tool drawn from teaching, research, and professional practice.</strong>
+    <span>
+      AI Creativity Roulette is a playful entry point into a larger body of AI creativity material
+      I teach at Concordia University's Faculty of Fine Arts and use with professionals, educators,
+      and creative teams.
+    </span>
+    <span>
+      The deeper practice is not about getting more AI outputs. It is about expanding idea spaces,
+      reframing problems, structuring creative workflows, evaluating results, introducing productive
+      friction, and keeping human judgment, authorship, and responsibility visible.
+    </span>
+  </div>
+  <figure class="cr-guide-mockup">
+    <img
+      src="/images/ai-creativity-guide-mockup.png"
+      alt="Mockup of the AI Creativity curriculum guide cover"
+      loading="lazy"
+      decoding="async"
+    />
+  </figure>
 </aside>
