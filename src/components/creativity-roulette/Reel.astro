@@ -3,12 +3,15 @@ interface Props {
   label: string;
   reel: 'family' | 'method' | 'move';
   initial: string;
+  index: string;
 }
 
-const { label, reel, initial } = Astro.props;
+const { label, reel, initial, index } = Astro.props;
 ---
 <div class="cr-reel" data-reel={reel} aria-live="off">
-  <span class="cr-reel-label">{label}</span>
+  <span class="cr-reel-label">
+    <span class="cr-reel-number">{index} / </span>{label}
+  </span>
   <span class="cr-reel-window">
     <span class="cr-reel-value" data-reel-value={reel}>{initial}</span>
   </span>

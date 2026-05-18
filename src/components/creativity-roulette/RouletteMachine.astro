@@ -8,9 +8,10 @@ import ResultCard from './ResultCard.astro';
 interface Props {
   personalizationEnabled: boolean;
   curationGateUrl: string;
+  consultingUrl: string;
 }
 
-const { personalizationEnabled, curationGateUrl } = Astro.props;
+const { personalizationEnabled, curationGateUrl, consultingUrl } = Astro.props;
 ---
 <section
   class="cr-app"
@@ -43,9 +44,9 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
     <ModeSelector />
 
     <div class="cr-reels" aria-label="Roulette reels">
-      <Reel label="Creative Family" reel="family" initial="Ready" />
-      <Reel label="Method" reel="method" initial="Set" />
-      <Reel label="Creative Move" reel="move" initial="Spin" />
+      <Reel label="Creative Family" reel="family" initial="Ready" index="01" />
+      <Reel label="Method" reel="method" initial="Set" index="02" />
+      <Reel label="Creative Move" reel="move" initial="Spin" index="03" />
     </div>
 
     <button class="cr-lever" type="button" data-spin-button aria-label="Pull the lever">
@@ -82,7 +83,7 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
 
   <div class="cr-result-panel">
     <ResultCard personalizationEnabled={personalizationEnabled} />
-    <GuideBridge />
+    <GuideBridge consultingUrl={consultingUrl} />
     <NewsletterCTA curationGateUrl={curationGateUrl} />
   </div>
 </section>
@@ -149,6 +150,12 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
   };
 
   type ReelName = 'family' | 'method' | 'move';
+
+  const initialReelValues: Record<ReelName, string> = {
+    family: 'Ready',
+    method: 'Set',
+    move: 'Spin',
+  };
 
   let currentResult: RouletteResult | null = null;
   let currentPersonalization: PersonalizedFields | null = null;
@@ -228,6 +235,13 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
   function setReelValue(reel: ReelName, value: string) {
     const element = app?.querySelector<HTMLElement>(`[data-reel-value="${reel}"]`);
     if (element) element.textContent = value;
+  }
+
+  function resetInitialReels() {
+    (Object.keys(initialReelValues) as ReelName[]).forEach((reel) => {
+      setReelValue(reel, initialReelValues[reel]);
+      app?.querySelector<HTMLElement>(`[data-reel="${reel}"]`)?.classList.remove('is-spinning', 'has-landed');
+    });
   }
 
   function setReelSpinning(reel: ReelName, spinning: boolean) {
@@ -588,5 +602,7 @@ const { personalizationEnabled, curationGateUrl } = Astro.props;
     } else {
       runSpin(createSeed('fresh'), false, true);
     }
+  } else {
+    resetInitialReels();
   }
 </script>
