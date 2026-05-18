@@ -1,10 +1,3 @@
----
-interface Props {
-  consultingUrl: string;
-}
-
-const { consultingUrl } = Astro.props;
----
 <div class="cr-curriculum-block" data-guide-bridge>
   <aside class="cr-guide-bridge">
     <div class="cr-guide-copy">
@@ -19,7 +12,6 @@ const { consultingUrl } = Astro.props;
         The deeper practice helps people move beyond prompt tricks: expanding idea spaces,
         reframing problems, testing outputs, and keeping human judgment visible.
       </span>
-      <a class="cr-guide-cta" href={consultingUrl}>Bring this to your team</a>
     </div>
     <figure class="cr-guide-mockup">
       <img
@@ -30,5 +22,5 @@ const { consultingUrl } = Astro.props;
       />
     </figure>
   </aside>
-  <a class="cr-contact-link" href="https://gate.continuumcreativity.ai/contact/">Pour me contacter</a>
+  <a class="cr-contact-link" href="https://gate.continuumcreativity.ai/contact/">Contact me</a>
 </div>

@@ -8,7 +8,6 @@ const personalizationEnabled =
   Boolean(import.meta.env.OPENAI_API_KEY) &&
   Boolean(import.meta.env.OPENAI_MODEL);
 const curationGateUrl = import.meta.env.CURATION_GATE_URL || '/curation-gate';
-const consultingUrl = import.meta.env.CONSULTING_URL || 'https://gate.continuumcreativity.ai/contact/';
 ---
 <BaseLayout
   title="AI Creativity Roulette"
@@ -31,7 +30,6 @@ const consultingUrl = import.meta.env.CONSULTING_URL || 'https://gate.continuumc
     <RouletteMachine
       personalizationEnabled={personalizationEnabled}
       curationGateUrl={curationGateUrl}
-      consultingUrl={consultingUrl}
     />
   </div>
 </BaseLayout>

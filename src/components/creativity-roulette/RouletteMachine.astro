@@ -8,10 +8,9 @@ import ResultCard from './ResultCard.astro';
 interface Props {
   personalizationEnabled: boolean;
   curationGateUrl: string;
-  consultingUrl: string;
 }
 
-const { personalizationEnabled, curationGateUrl, consultingUrl } = Astro.props;
+const { personalizationEnabled, curationGateUrl } = Astro.props;
 ---
 <section
   class="cr-app"
@@ -22,11 +21,6 @@ const { personalizationEnabled, curationGateUrl, consultingUrl } = Astro.props;
   <div class="cr-machine-panel" aria-label="AI Creativity Roulette controls">
     <div class="cr-machine-top">
       <p class="cr-microcopy">Randomness is the bait. Reflection is the point.</p>
-      <div class="cr-machine-lights" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
     </div>
 
     <div class="cr-field">
@@ -83,7 +77,7 @@ const { personalizationEnabled, curationGateUrl, consultingUrl } = Astro.props;
 
   <div class="cr-result-panel">
     <ResultCard personalizationEnabled={personalizationEnabled} />
-    <GuideBridge consultingUrl={consultingUrl} />
+    <GuideBridge />
     <NewsletterCTA curationGateUrl={curationGateUrl} />
   </div>
 </section>
