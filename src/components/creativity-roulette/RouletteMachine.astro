@@ -1,0 +1,401 @@
+---
+import ModeSelector from './ModeSelector.astro';
+import NewsletterCTA from './NewsletterCTA.astro';
+import Reel from './Reel.astro';
+import ResultCard from './ResultCard.astro';
+
+interface Props {
+  personalizationEnabled: boolean;
+  curationGateUrl: string;
+}
+
+const { personalizationEnabled, curationGateUrl } = Astro.props;
+---
+<section
+  class="cr-app"
+  data-roulette-app
+  data-personalization-enabled={personalizationEnabled ? 'true' : 'false'}
+>
+  <div class="cr-machine-panel" aria-label="AI Creativity Roulette controls">
+    <div class="cr-machine-top">
+      <p class="cr-microcopy">Randomness is the bait. Reflection is the point.</p>
+      <div class="cr-machine-lights" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="cr-field">
+      <label for="creativity-topic">What are you stuck on?</label>
+      <textarea
+        id="creativity-topic"
+        maxlength="240"
+        rows="3"
+        placeholder="a project, a concept, a paper, a design problem…"
+        data-topic-input
+      ></textarea>
+      <span class="cr-counter" data-topic-counter>0 / 240</span>
+    </div>
+
+    <ModeSelector />
+
+    <div class="cr-reels" aria-label="Roulette reels">
+      <Reel label="Creative Family" reel="family" initial="Creative Family" />
+      <Reel label="Method" reel="method" initial="Method" />
+      <Reel label="Creative Move" reel="move" initial="Creative Move" />
+    </div>
+
+    <button class="cr-lever" type="button" data-spin-button>
+      Pull the lever
+    </button>
+
+    <p class="cr-machine-status" data-machine-status role="status" aria-live="polite"></p>
+    <div class="sr-only" data-live-region aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <div class="cr-result-panel">
+    <ResultCard personalizationEnabled={personalizationEnabled} />
+    <NewsletterCTA curationGateUrl={curationGateUrl} />
+  </div>
+</section>
+
+<script>
+  import { creativityFamilies } from '../../../data/creativityRoulette';
+  import type { CreativityMode } from '../../../data/creativityRoulette';
+  import { normalizeTopic } from '../../../lib/creativityRoulette/interpolatePrompt';
+  import { getModeAdjustedCard } from '../../../lib/creativityRoulette/mode';
+  import {
+    createSeed,
+    findRouletteResult,
+    isCreativityMode,
+    spinRoulette,
+    toSelection,
+    type RouletteResult,
+  } from '../../../lib/creativityRoulette/spin';
+  import {
+    createShareUrl,
+    decodeShareToken,
+  } from '../../../lib/creativityRoulette/shareToken';
+
+  const app = document.querySelector<HTMLElement>('[data-roulette-app]');
+  const spinButton = app?.querySelector<HTMLButtonElement>('[data-spin-button]');
+  const topicInput = app?.querySelector<HTMLTextAreaElement>('[data-topic-input]');
+  const topicCounter = app?.querySelector<HTMLElement>('[data-topic-counter]');
+  const machineStatus = app?.querySelector<HTMLElement>('[data-machine-status]');
+  const liveRegion = app?.querySelector<HTMLElement>('[data-live-region]');
+  const resultCard = app?.querySelector<HTMLElement>('[data-result-card]');
+  const emptyResult = app?.querySelector<HTMLElement>('[data-empty-result]');
+  const newsletter = app?.querySelector<HTMLElement>('[data-newsletter]');
+  const actions = app?.querySelector<HTMLElement>('[data-actions]');
+  const actionStatus = app?.querySelector<HTMLElement>('[data-action-status]');
+  const personalizeButton = app?.querySelector<HTMLButtonElement>('[data-personalize]');
+  const copyPromptButton = app?.querySelector<HTMLButtonElement>('[data-copy-prompt]');
+  const copyShareButton = app?.querySelector<HTMLButtonElement>('[data-copy-share]');
+  const spinAgainButton = app?.querySelector<HTMLButtonElement>('[data-spin-again]');
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reelSamples = {
+    family: creativityFamilies.map((family) => family.label),
+    method: creativityFamilies.flatMap((family) => family.methods.map((method) => method.label)),
+    move: creativityFamilies.flatMap((family) =>
+      family.methods.flatMap((method) => method.moves.map((move) => move.label))
+    ),
+  };
+
+  type PersonalizedFields = {
+    tryItNow: string;
+    promptToCopy: string;
+    theoryUnderneath: string;
+    watchOut: string;
+    nextMove: string;
+  };
+
+  type ReelName = 'family' | 'method' | 'move';
+
+  let currentResult: RouletteResult | null = null;
+  let currentPersonalization: PersonalizedFields | null = null;
+  let isSpinning = false;
+
+  const $ = (selector: string) => app?.querySelector(selector);
+  const text = (selector: string, value: string) => {
+    const element = $(selector);
+    if (element) element.textContent = value;
+  };
+
+  function currentMode(): CreativityMode {
+    const checked = app?.querySelector<HTMLInputElement>('input[name="creativity-mode"]:checked');
+    const value = checked?.value;
+    return isCreativityMode(value) ? value : 'useful';
+  }
+
+  function setMode(mode: CreativityMode) {
+    const input = app?.querySelector<HTMLInputElement>(`input[name="creativity-mode"][value="${mode}"]`);
+    if (input) input.checked = true;
+  }
+
+  function setStatus(message: string) {
+    if (machineStatus) machineStatus.textContent = message;
+  }
+
+  function setActionStatus(message: string) {
+    if (actionStatus) actionStatus.textContent = message;
+  }
+
+  function getTopic(): string {
+    return normalizeTopic(topicInput?.value ?? '');
+  }
+
+  function updateCounter() {
+    if (topicCounter && topicInput) {
+      topicCounter.textContent = `${topicInput.value.length} / 240`;
+    }
+  }
+
+  function setReelValue(reel: ReelName, value: string) {
+    const element = app?.querySelector<HTMLElement>(`[data-reel-value="${reel}"]`);
+    if (element) element.textContent = value;
+  }
+
+  function setReelSpinning(reel: ReelName, spinning: boolean) {
+    const element = app?.querySelector<HTMLElement>(`[data-reel="${reel}"]`);
+    element?.classList.toggle('is-spinning', spinning);
+    element?.classList.toggle('has-landed', !spinning);
+  }
+
+  function cycleReel(reel: ReelName) {
+    const samples = reelSamples[reel];
+    let index = 0;
+    return window.setInterval(() => {
+      index = (index + 1) % samples.length;
+      setReelValue(reel, samples[index]);
+    }, 84);
+  }
+
+  function renderResult(result: RouletteResult) {
+    currentResult = result;
+    const topic = getTopic();
+    const personalized = currentPersonalization;
+    const modeAdjusted = getModeAdjustedCard(result, topic);
+    const prompt = personalized?.promptToCopy ?? modeAdjusted.promptToCopy;
+
+    resultCard?.removeAttribute('hidden');
+    emptyResult?.setAttribute('hidden', '');
+    newsletter?.removeAttribute('hidden');
+    actions?.removeAttribute('hidden');
+
+    text('[data-result-title]', result.move.label);
+    text('[data-family-chip]', result.family.label);
+    text('[data-method-chip]', result.method.label);
+    text('[data-mode-chip]', modeAdjusted.modeLabel);
+    text('[data-risk-chip]', modeAdjusted.riskLevel);
+    text('[data-mode-intent]', modeAdjusted.modeIntent);
+    text('[data-why]', result.method.whyThisHelps);
+    text('[data-try]', personalized?.tryItNow ?? modeAdjusted.tryItNow);
+    text('[data-prompt]', prompt);
+    text('[data-theory]', personalized?.theoryUnderneath ?? result.method.theoryUnderneath);
+    text('[data-watch]', personalized?.watchOut ?? result.method.watchOut);
+    text('[data-next]', personalized?.nextMove ?? modeAdjusted.nextMove);
+    text('[data-learn]', result.move.learnMore);
+
+    setReelValue('family', result.family.label);
+    setReelValue('method', result.method.label);
+    setReelValue('move', result.move.label);
+
+    if (liveRegion) {
+      liveRegion.textContent = `Your creative move is ${result.move.label}, from ${result.family.label}, using ${result.method.label}.`;
+    }
+  }
+
+  function updateUrl(result: RouletteResult, replace = false) {
+    const shareUrl = createShareUrl(window.location.href, toSelection(result));
+    if (replace) {
+      window.history.replaceState({}, '', shareUrl);
+    } else {
+      window.history.pushState({}, '', shareUrl);
+    }
+  }
+
+  async function runSpin(seed = createSeed(), animate = true, replaceUrl = false) {
+    if (!spinButton || isSpinning) return;
+
+    isSpinning = true;
+    currentPersonalization = null;
+    setActionStatus('');
+    setStatus('The reels are moving...');
+    spinButton.disabled = true;
+    resultCard?.classList.remove('is-visible');
+
+    const mode = currentMode();
+    const result = spinRoulette(creativityFamilies, mode, seed);
+    const shouldAnimate = animate && !reducedMotion.matches;
+
+    if (!shouldAnimate) {
+      renderResult(result);
+      resultCard?.classList.add('is-visible');
+      updateUrl(result, replaceUrl);
+      setStatus('Landed.');
+      spinButton.disabled = false;
+      isSpinning = false;
+      return;
+    }
+
+    const intervals = {
+      family: cycleReel('family'),
+      method: cycleReel('method'),
+      move: cycleReel('move'),
+    };
+
+    setReelSpinning('family', true);
+    setReelSpinning('method', true);
+    setReelSpinning('move', true);
+
+    window.setTimeout(() => {
+      window.clearInterval(intervals.family);
+      setReelValue('family', result.family.label);
+      setReelSpinning('family', false);
+    }, 850);
+
+    window.setTimeout(() => {
+      window.clearInterval(intervals.method);
+      setReelValue('method', result.method.label);
+      setReelSpinning('method', false);
+    }, 1550);
+
+    window.setTimeout(() => {
+      window.clearInterval(intervals.move);
+      setReelValue('move', result.move.label);
+      setReelSpinning('move', false);
+      renderResult(result);
+      resultCard?.classList.add('is-visible');
+      updateUrl(result, replaceUrl);
+      setStatus('Landed.');
+      spinButton.disabled = false;
+      isSpinning = false;
+    }, 2300);
+  }
+
+  async function copyText(value: string, successMessage: string) {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        const temporary = document.createElement('textarea');
+        temporary.value = value;
+        temporary.setAttribute('readonly', '');
+        temporary.style.position = 'fixed';
+        temporary.style.left = '-9999px';
+        document.body.appendChild(temporary);
+        temporary.select();
+        document.execCommand('copy');
+        temporary.remove();
+      }
+      setActionStatus(successMessage);
+    } catch {
+      setActionStatus('Copy is unavailable here. Select the text manually.');
+    }
+  }
+
+  function currentPrompt() {
+    const promptElement = app?.querySelector<HTMLElement>('[data-prompt]');
+    return promptElement?.textContent ?? '';
+  }
+
+  async function copyShareLink() {
+    if (!currentResult) return;
+
+    const shareUrl = createShareUrl(window.location.href, toSelection(currentResult));
+    const shareData = {
+      title: 'AI Creativity Roulette',
+      text: 'A creative move from AI Creativity Roulette',
+      url: shareUrl,
+    };
+
+    if (navigator.share && navigator.canShare?.(shareData)) {
+      try {
+        await navigator.share(shareData);
+        setActionStatus('Share sheet opened.');
+        return;
+      } catch {
+        // Fall back to clipboard if the share sheet is cancelled or unavailable.
+      }
+    }
+
+    await copyText(shareUrl, 'Share link copied.');
+  }
+
+  async function personalizeResult() {
+    if (!currentResult || !personalizeButton) return;
+
+    const topic = getTopic();
+    if (!topic) {
+      setActionStatus('Add an idea first, then personalize.');
+      topicInput?.focus();
+      return;
+    }
+
+    personalizeButton.disabled = true;
+    setActionStatus('Making it specific...');
+
+    try {
+      const response = await fetch('/api/creativity-roulette/personalize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic,
+          mode: currentResult.mode,
+          familyId: currentResult.family.id,
+          methodId: currentResult.method.id,
+          moveId: currentResult.move.id,
+          seed: currentResult.seed,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Personalization unavailable');
+      }
+
+      const data = await response.json();
+      if (!data?.result) {
+        throw new Error('Missing personalization');
+      }
+
+      currentPersonalization = data.result;
+      renderResult(currentResult);
+      setActionStatus('Personalized.');
+    } catch {
+      setActionStatus('Personalization is taking a break. The original creative move is still ready.');
+    } finally {
+      personalizeButton.disabled = false;
+    }
+  }
+
+  spinButton?.addEventListener('click', () => runSpin());
+  spinAgainButton?.addEventListener('click', () => runSpin());
+  copyPromptButton?.addEventListener('click', () => copyText(currentPrompt(), 'Prompt copied.'));
+  copyShareButton?.addEventListener('click', copyShareLink);
+  personalizeButton?.addEventListener('click', personalizeResult);
+
+  topicInput?.addEventListener('input', () => {
+    updateCounter();
+    currentPersonalization = null;
+    if (currentResult) renderResult(currentResult);
+  });
+
+  updateCounter();
+
+  const spinToken = new URLSearchParams(window.location.search).get('spin');
+  if (spinToken) {
+    const selection = decodeShareToken(spinToken);
+    const sharedResult = selection ? findRouletteResult(creativityFamilies, selection) : null;
+
+    if (sharedResult) {
+      setMode(sharedResult.mode);
+      renderResult(sharedResult);
+      resultCard?.classList.add('is-visible');
+      setStatus('Loaded from a shared spin.');
+    } else {
+      runSpin(createSeed('fresh'), false, true);
+    }
+  }
+</script>

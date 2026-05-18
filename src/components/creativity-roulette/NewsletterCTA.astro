@@ -1,0 +1,12 @@
+---
+interface Props {
+  curationGateUrl: string;
+}
+
+const { curationGateUrl } = Astro.props;
+---
+<aside class="cr-newsletter" data-newsletter hidden>
+  <p>Want more creative moves like this?</p>
+  <strong>Join the Curation Gate newsletter.</strong>
+  <a href={curationGateUrl}>Join Curation Gate</a>
+</aside>

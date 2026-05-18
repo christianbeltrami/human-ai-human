@@ -1,0 +1,24 @@
+---
+interface Props {
+  personalizationEnabled: boolean;
+}
+
+const { personalizationEnabled } = Astro.props;
+---
+<div class="cr-actions" data-actions hidden>
+  <button class="cr-secondary-button" type="button" data-copy-prompt>
+    Copy prompt
+  </button>
+  <button class="cr-secondary-button" type="button" data-copy-share>
+    Copy share link
+  </button>
+  <button class="cr-secondary-button" type="button" data-spin-again>
+    Spin again
+  </button>
+  {personalizationEnabled && (
+    <button class="cr-secondary-button cr-personalize-button" type="button" data-personalize>
+      Make this specific to my idea
+    </button>
+  )}
+</div>
+<p class="cr-action-status" data-action-status role="status" aria-live="polite"></p>

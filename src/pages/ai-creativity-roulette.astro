@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RouletteMachine from '../components/creativity-roulette/RouletteMachine.astro';
+import '../styles/creativity-roulette.css';
+
+const personalizationEnabled =
+  import.meta.env.ENABLE_OPENAI_PERSONALIZATION === 'true' &&
+  Boolean(import.meta.env.OPENAI_API_KEY) &&
+  Boolean(import.meta.env.OPENAI_MODEL);
+const curationGateUrl = import.meta.env.CURATION_GATE_URL || '/curation-gate';
+---
+<BaseLayout
+  title="AI Creativity Roulette"
+  seoTitle="AI Creativity Roulette — human-ai-human"
+  description="Stuck on an idea? Pull the lever. The machine gives you a creative move, not an answer."
+  lang="en"
+>
+  <div class="creativity-roulette-page">
+    <section class="cr-hero">
+      <div>
+        <p class="cr-eyebrow">AI Human studio tool</p>
+        <h1>AI Creativity Roulette</h1>
+        <p class="cr-subtitle">
+          Stuck on an idea? Pull the lever. The machine gives you a creative move,
+          not an answer.
+        </p>
+      </div>
+    </section>
+
+    <RouletteMachine
+      personalizationEnabled={personalizationEnabled}
+      curationGateUrl={curationGateUrl}
+    />
+  </div>
+</BaseLayout>

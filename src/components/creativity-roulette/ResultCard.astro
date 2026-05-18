@@ -1,0 +1,69 @@
+---
+import ShareButtons from './ShareButtons.astro';
+
+interface Props {
+  personalizationEnabled: boolean;
+}
+
+const { personalizationEnabled } = Astro.props;
+---
+<section class="cr-result-card" data-result-card hidden aria-labelledby="cr-result-heading">
+  <div class="cr-result-kicker">Your creative move</div>
+  <h2 id="cr-result-heading" data-result-title></h2>
+
+  <div class="cr-chips" aria-label="Selected roulette combination">
+    <span class="cr-chip" data-family-chip></span>
+    <span class="cr-chip" data-method-chip></span>
+    <span class="cr-chip" data-mode-chip></span>
+    <span class="cr-chip cr-chip-warm" data-risk-chip></span>
+  </div>
+
+  <div class="cr-mode-note">
+    <h3>Creative temperature</h3>
+    <p data-mode-intent></p>
+  </div>
+
+  <div class="cr-result-section">
+    <h3>Why this helps</h3>
+    <p data-why></p>
+  </div>
+
+  <div class="cr-result-section">
+    <h3>Try it now</h3>
+    <p data-try></p>
+  </div>
+
+  <div class="cr-result-section">
+    <h3>Prompt to copy</h3>
+    <div class="cr-prompt-box" data-prompt></div>
+  </div>
+
+  <div class="cr-result-grid">
+    <div class="cr-result-section">
+      <h3>Theory underneath</h3>
+      <p data-theory></p>
+    </div>
+
+    <div class="cr-result-section cr-watch">
+      <h3>Watch out</h3>
+      <p data-watch></p>
+    </div>
+  </div>
+
+  <div class="cr-next">
+    <h3>Next move</h3>
+    <p data-next></p>
+  </div>
+
+  <details class="cr-learn">
+    <summary>Learn why this works</summary>
+    <p data-learn></p>
+  </details>
+
+  <ShareButtons personalizationEnabled={personalizationEnabled} />
+</section>
+
+<section class="cr-empty-result" data-empty-result>
+  <p class="cr-empty-eyebrow">Ready when you are</p>
+  <p>The reels are quiet. The next move is waiting.</p>
+</section>
