@@ -140,6 +140,12 @@ const today = new Intl.DateTimeFormat('en-CA', {
   year: 'numeric', month: 'long', day: 'numeric',
   hour: '2-digit', minute: '2-digit',
 }).format(new Date());
+
+const TRACKED_TOOLS = ['/ai-creativity-roulette', '/resources'];
+const isTrackedPage = (path: string) =>
+  !!path && (path.startsWith('/posts/') || TRACKED_TOOLS.includes(path));
+const displayName = (path: string) =>
+  TRACKED_TOOLS.includes(path) ? path.replace(/^\//, '') : path.replace('/posts/', '');
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -371,24 +377,24 @@ const today = new Intl.DateTimeFormat('en-CA', {
           ))}
         </div>
         <p class="panel-title">Top articles · 7 days</p>
-        {(topPages as any[]).filter((p: any) => p.x?.startsWith('/posts/')).length === 0
+        {(topPages as any[]).filter((p: any) => isTrackedPage(p.x)).length === 0
           ? <p class="empty">No article views yet.</p>
           : <ul class="metric-list">
-              {(topPages as any[]).filter((p: any) => p.x?.startsWith('/posts/')).map((p: any) => (
+              {(topPages as any[]).filter((p: any) => isTrackedPage(p.x)).map((p: any) => (
                 <li class="metric-item">
-                  <span class="metric-name">{p.x.replace('/posts/', '')}</span>
+                  <span class="metric-name">{displayName(p.x)}</span>
                   <span class="metric-count">{p.y}</span>
                 </li>
               ))}
             </ul>
         }
         <p class="panel-title" style="margin-top:1.25rem;">Top articles · all time</p>
-        {(topPagesAllTime as any[]).filter((p: any) => p.x?.startsWith('/posts/')).length === 0
+        {(topPagesAllTime as any[]).filter((p: any) => isTrackedPage(p.x)).length === 0
           ? <p class="empty">No article views yet.</p>
           : <ul class="metric-list">
-              {(topPagesAllTime as any[]).filter((p: any) => p.x?.startsWith('/posts/')).map((p: any) => (
+              {(topPagesAllTime as any[]).filter((p: any) => isTrackedPage(p.x)).map((p: any) => (
                 <li class="metric-item">
-                  <span class="metric-name">{p.x.replace('/posts/', '')}</span>
+                  <span class="metric-name">{displayName(p.x)}</span>
                   <span class="metric-count">{p.y}</span>
                 </li>
               ))}

@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+
+const allPosts = await getCollection('posts', ({ data }) =>
+  !data.draft && (data.tags ?? []).includes('resources')
+);
+const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<BaseLayout
+  title="Resources"
+  seoTitle="Resources — human-ai-human"
+  description="Catalogues et références éditoriales sur l'IA créative, la vidéo générative et les outils utilisés en enseignement."
+  lang="fr"
+>
+  <section style="margin-bottom: 2rem;">
+    <p style="color:var(--text-secondary); font-style:italic; margin: 0.5rem 0 0;">
+      Catalogues et références éditoriales. Pas des listes de recommandation : chaque entrée doit être revérifiée avant usage.
+    </p>
+  </section>
+
+  {posts.length === 0 ? (
+    <p style="color:var(--text-secondary); margin-top:2rem;">
+      Aucune ressource pour le moment.
+    </p>
+  ) : (
+    <ul class="post-list">
+      {posts.map(post => (
+        <PostCard
+          title={post.data.title}
+          slug={post.slug}
+          date={post.data.date}
+          tags={post.data.tags}
+          lang={post.data.lang}
+          excerpt={post.data.excerpt}
+        />
+      ))}
+    </ul>
+  )}
+</BaseLayout>
