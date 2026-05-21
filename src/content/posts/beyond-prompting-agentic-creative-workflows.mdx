@@ -1,0 +1,624 @@
+---
+title: "Beyond prompting: Claude Code, Codex, MCP, and the new agentic workflows for graphic designers and computational artists"
+date: 2026-05-21
+modified: 2026-05-21
+lang: en
+author: "Christian Beltrami"
+tags: ["resources", "ai", "agentic", "mcp", "claude-code", "codex", "creative-coding", "design", "blender", "touchdesigner", "resolume", "figma"]
+excerpt: "A long-form field guide on the 2026 shift from generative AI as image producer to agentic AI as a controllable layer inside Blender, Figma, Resolume, TouchDesigner, Remotion, and the creative toolchain at large."
+description: "Field guide on agentic creative workflows: Claude Code, Codex, MCP servers, design-system rules, and the new role of the artist as system designer."
+seoTitle: "Agentic creative workflows — Claude Code, Codex, MCP (May 2026)"
+hideSignature: false
+draft: false
+---
+
+**Last updated:** May 21, 2026  
+**Time context:** Late May 2026  
+**Audience:** Advanced students in graphic design, motion design, interaction design, creative coding, computational arts, VJing, experimental 3D — and educators building courses around AI-assisted creative workflows.
+
+> **Verification notice**
+>
+> The tools, integrations, and product announcements covered here move fast. Every URL, version number, model ID, connector, and limitation should be re-verified against primary documentation before being relied on in teaching, production, or public claims. Treat this page as a structured starting point, not a stable reference.
+
+---
+
+## Why this matters now
+
+The first wave of generative AI for creative people was mostly about producing artifacts: an image, a moodboard, a logo variation, a piece of copy, a short clip. The interface was a chat box, the unit of work was a prompt, and the result was usually a flat file pulled out of a black box.
+
+What is changing in 2026 is harder to see at first glance, because it does not show up as a more impressive picture. It shows up as a different relationship between the artist, the software, and the model.
+
+Agentic systems — Claude Code, Codex, MCP servers, design-system rule files, creative connectors — can now read project files, edit code, drive creative software through documented APIs, capture screenshots, run renders, inspect outputs, and iterate with the human in the loop. Anthropic frames its April 2026 product positioning around this idea explicitly, calling Claude a way to extend creative workflows rather than replace imagination or taste ([Anthropic, "Claude for Creative Work"](https://www.anthropic.com/news/claude-for-creative-work)).
+
+The argument of this resource is simple:
+
+> In 2026, the advanced creative practitioner does not simply ask AI for an image. They design the environment in which the AI can act, then take responsibility for the result.
+
+---
+
+## Table of contents
+
+1. The shift: AI is entering the studio toolchain
+2. What changed in 2026
+3. The philosophy: design the system, not just the artifact
+4. The agentic creative stack
+5. Key terms: MCP, agents, skills, instruction files, visual verification
+6. The landscape: tools and case-study cards
+7. What graphic designers can explore first
+8. What computational artists can explore first
+9. Edge cases worth studying
+10. Classroom labs and assignments
+11. Workflow templates
+12. How to work safely and critically
+13. Who and what to follow
+14. The deeper lesson
+15. Sources and update log
+
+---
+
+## 1. The shift: AI is entering the studio toolchain
+
+For roughly three years, "AI for designers" has mostly meant a model behind a chat box that returns an image, a draft, or a description. The model never opened your files. It never read your design system. It never rendered a frame, captured a screenshot, or checked its own work against your brief. The artist was the one carrying every piece of context back and forth in their head and in the prompt.
+
+The agentic turn changes that arrangement. An agent is not just something that talks; it is something that acts over multiple steps. It can list the files in a project, read them, plan an edit, write code or scripts, run commands, inspect outputs, capture a preview, compare it to a target, and revise — without the human having to restate the brief at every loop.
+
+That capacity becomes interesting for creative work the moment the agent is allowed to touch the tools where the work actually lives. Blender. Figma. TouchDesigner. Resolume. Remotion. Code editors. Browsers. Render queues. The Model Context Protocol (MCP) and adjacent integrations are the connective tissue making this possible.
+
+The thesis throughout this resource is that the cutting edge is not "AI generates more images." The cutting edge is: AI agents can now be wired into the actual environments where creative work is made, and that changes what students should learn.
+
+---
+
+## 2. What changed in 2026
+
+A few moves in the past several months matter more than the rest:
+
+- **Anthropic's "Claude for Creative Work" announcement** (April 28, 2026) framed Claude as a layer that connects to major creative tools rather than a standalone image generator, with connectors spanning the Adobe stack, Blender, Ableton, Affinity, Autodesk Fusion, Resolume, SketchUp, and Splice according to the announcement ([Anthropic](https://www.anthropic.com/news/claude-for-creative-work)). Verify the current list before quoting.
+- **Blender's MCP server** is a landmark case because Blender ships a deep Python API; once an agent can drive that API, scenes, materials, Geometry Nodes, render passes, and add-ons become programmable territory ([Blender, "MCP Server"](https://www.blender.org/lab/mcp-server/)). A community implementation also exists at [ahujasid/blender-mcp](https://github.com/ahujasid/blender-mcp); the two should not be conflated.
+- **OpenAI Codex** documentation now describes MCP support for both STDIO and Streamable HTTP servers in the CLI and IDE extension, with configuration in `~/.codex/config.toml` or project-level `.codex/config.toml` ([Codex MCP docs](https://developers.openai.com/codex/mcp), [Codex config basics](https://developers.openai.com/codex/config-basic)).
+- **Figma's MCP ecosystem and "Claude Code to Figma" workflow** make it possible to move design context, code, and canvas in both directions: production code can be captured back into editable Figma frames, and agents can use design-system rules to generate code that respects existing components ([Figma blog, "Introducing Claude Code to Figma"](https://www.figma.com/blog/introducing-claude-code-to-figma/), [Figma MCP server guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server)).
+- **Resolume 7.26** introduced local MCP servers for Arena/Avenue and Wire, documented as usable with Claude, Codex, and other MCP-compatible AI tools — bringing agentic workflows into live visuals and VJ practice ([Resolume blog](https://resolume.com/blog/34484), [Resolume MCP docs](https://resolume.com/support/en/mcp-servers)).
+- **Remotion Agent Skills** and **HyperFrames** treat motion graphics and video as programmable, agent-editable systems rather than timeline files ([Remotion AI skills](https://www.remotion.dev/docs/ai/skills), [HyperFrames repository](https://github.com/heygen-com/hyperframes)).
+- **TouchDesigner experiments** — community MCP servers and patch-generation bridges — show artists wiring agents directly into a real-time node-based environment ([8beeeaaat/touchdesigner-mcp](https://github.com/8beeeaaat/touchdesigner-mcp), [Winfred_Nak's bridge post](https://derivative.ca/community-post/asset/wip-claude-codeor-openclaw-mcp-bridge-touchdesigner/74168), [Infratonal's VIBE-Controller](https://derivative.ca/community-post/asset/vibe-controller-touchdesigner-build-any-ui-claude-code/74272)).
+
+None of these alone would shift a discipline. Together, they signal that the surface area for agentic action inside creative software has grown faster in the past six months than in the previous two years.
+
+---
+
+## 3. The philosophy: design the system, not just the artifact
+
+The label "AI as collaborator" is too vague to be useful. Collaboration implies symmetry and shared judgment, and that is rarely what is happening when an agent edits a Blender scene or rebuilds a Remotion template. A more honest framing is **AI as operator**: a capable, fast, sometimes literal-minded executor that can take action inside a defined environment, under a defined set of constraints, with a human still responsible for taste and meaning.
+
+That framing puts the artist in a different role:
+
+- **System designer.** Choosing which tools the agent can touch, which files it can read, which conventions it must respect, which outputs count as success.
+- **Instrument builder.** Producing the templates, scripts, design-system rule files, and patches that turn one good output into a reusable family of outputs.
+- **Critic.** Reading what the agent produces, rejecting plausible mediocrity, naming what is missing.
+- **Performer or editor.** Selecting, sequencing, and presenting the final result in a way the agent cannot.
+
+Three slogans worth carrying around:
+
+- **Design the system, not only the artifact.** The artwork may be a pipeline, a Figma rule file, a Wire patch, a Remotion template — not only a poster or a video.
+- **The prompt is temporary; the workflow is reusable.** A clever prompt is forgotten in a week; a documented workflow can be taught, shared, and improved.
+- **The best AI-assisted creative work often produces tools before it produces outputs.** The Blender add-on, the Figma rules file, and the Remotion template can outlive any single piece.
+
+The human remains responsible for taste, cultural context, meaning, ethics, and final decisions. Agentic systems do not change that; they raise the cost of forgetting it.
+
+---
+
+## 4. The agentic creative stack
+
+It helps to picture agentic creative work as a layered stack. This is a pedagogical model, not a fixed technical standard.
+
+1. **Human intention.** Brief, taste, cultural context, critique.
+2. **Agent.** Claude Code, Codex, Cursor, Gemini CLI, or similar.
+3. **Instructions.** `CLAUDE.md`, `AGENTS.md`, skills, rubrics, design-system rules.
+4. **Tool access.** MCP servers, REST APIs, CLIs, plugins, browser drivers.
+5. **Creative environments.** Blender, Figma, TouchDesigner, Resolume, Remotion, Adobe, Canva, the web.
+6. **Feedback.** Screenshots, renders, tests, previews, errors, logs, performance metrics.
+7. **Versioning and safety.** Git, backups, sandboxes, permissions, checkpoints.
+8. **Human curation.** Critique, editing, selection, public framing.
+
+The interesting move is not adding a layer; it is making each layer legible and editable. A `CLAUDE.md` file makes studio rules legible to a machine. An MCP server makes a tool's affordances legible. A screenshot or render makes the output legible back to the agent. The more layers are made legible, the more the agent can do useful work without supervision — and the more important it becomes that the human has made deliberate choices about what those rules and tools are.
+
+---
+
+## 5. Key terms
+
+A short glossary, in plain language.
+
+### Agentic AI
+
+A system that can take actions over multiple steps: inspect files, run commands, use tools, edit code, call APIs, check results, and revise its own work. A chatbot answers; an agent operates.
+
+### Claude Code
+
+Anthropic's agentic coding environment. It reads files, runs commands, edits projects, connects to MCP servers, follows project instructions in `CLAUDE.md`, and participates in iterative workflows. It is not only for traditional software engineering: it is increasingly used to generate scripts, plugins, shaders, procedural systems, and entire design workflows. Best-practice documentation lives at [code.claude.com/docs/en/best-practices](https://code.claude.com/docs/en/best-practices).
+
+### Codex
+
+OpenAI's coding agent. Codex can read, edit, and run code in a CLI and IDE extension, and current documentation describes MCP support for both STDIO and Streamable HTTP servers ([Codex MCP](https://developers.openai.com/codex/mcp)). For creative work it is especially relevant when the artifact is code-adjacent: Remotion videos, Figma-to-code work, shader code, p5.js or Three.js sketches, Blender Python scripts, batch exports, and Git-managed design systems.
+
+### MCP / Model Context Protocol
+
+A protocol for connecting AI systems to external tools and context. The popular "USB-C for AI tools" analogy captures part of it: a standard plug. The more important point is that MCP gives the model structured access to specific affordances — Blender's scene graph, Figma's design context, Resolume's compositions, a browser, a database — rather than a vague description of them.
+
+### Skills
+
+Reusable instructions/workflows that tell an agent how to perform a task in a domain. Examples include Figma MCP skills, Remotion Agent Skills, and Claude Code skills for repeated routines like sketch-to-interface or design-system-rule generation.
+
+### `CLAUDE.md` / `AGENTS.md`
+
+Persistent project instruction files. For design students, the most useful mental model is "studio rules for an AI collaborator": visual language, component conventions, typography, file structure, naming rules, accessibility requirements, motion principles, rendering constraints, and forbidden shortcuts. Figma's "Create Design System Rules" skill is one supported path for generating these files automatically ([Figma developer docs](https://developers.figma.com/docs/figma-mcp-server/skill-figma-create-design-system-rules/)).
+
+### Visual verification loop
+
+The loop: prompt → agent edits → render/preview/screenshot → compare → critique → revise. For creative work, the verification step is usually more important than the prompting step. Without it, agents drift into plausible-looking mediocrity.
+
+### Prompt vs protocol
+
+A prompt describes what you want. A protocol defines what the agent can actually do — which tools it can call, which files it can touch, what counts as success. As capabilities grow, *what the agent can do* becomes a more important design surface than *what you said to it*.
+
+---
+
+## 6. The landscape: tools and case-study cards
+
+The cards below cover the most important examples to know. Each is presented with what it is, why it matters, what a student could try, its maturity level, and its best fit. Verify links and version numbers before relying on them in teaching or production.
+
+### Card 1 — Claude for Creative Work / Anthropic creative connectors
+
+- **What it is.** A set of connectors that link Claude into creative software: the Adobe Creative Cloud stack, Blender, Ableton, Affinity, Autodesk Fusion, Resolume, SketchUp, and Splice, according to the April 28, 2026 announcement.
+- **Why it matters.** The significance is not the list of logos; it is the framing. Anthropic positions Claude as a way to extend creative workflows and handle repetitive production work, not as a replacement for imagination or taste.
+- **What students can try.** Pick a single connector relevant to your discipline, read the official documentation, and walk through one realistic task end to end. Resist the urge to chain six connectors before understanding one.
+- **Maturity.** Official; connectors and availability evolve.
+- **Best fit.** Any discipline; particularly graphic design, motion, 3D, music.
+- **Source.** [Anthropic, "Claude for Creative Work"](https://www.anthropic.com/news/claude-for-creative-work).
+
+### Card 2 — Blender MCP
+
+- **What it is.** A Model Context Protocol server that exposes Blender's Python API to an AI agent. An official connector exists through the Blender Lab; a separate community implementation is [`ahujasid/blender-mcp`](https://github.com/ahujasid/blender-mcp).
+- **Why it matters.** Blender has one of the richest scripting APIs in 3D. The interesting workflows are usually *meta-creative*: scene cleanup, material standardisation, Geometry Nodes assistance, batch rendering, procedural animation helpers, custom panels, and debugging — not asking the agent for a "finished" 3D object.
+- **What students can try.** Open a messy scene file you have, ask the agent to inspect and describe it, then ask for a cleanup script before any rendering happens.
+- **Maturity.** Official connector through Blender Lab; community projects experimental.
+- **Best fit.** Computational arts, experimental 3D, motion, technical art.
+- **Sources.** [Anthropic announcement](https://www.anthropic.com/news/claude-for-creative-work), [Blender MCP server page](https://www.blender.org/lab/mcp-server/), [ahujasid/blender-mcp](https://github.com/ahujasid/blender-mcp).
+
+> Distinguish the official Blender MCP connector from community projects. Do not imply that Blender MCP can reliably replace skilled 3D practice. Treat it as an emerging interface to Blender's Python/API layer.
+
+### Card 3 — Claude Code best practices as creative methodology
+
+- **What it is.** A documentation set on how to use Claude Code effectively. The headline tactics — explore before editing, plan before implementing, verify outputs with screenshots or tests, write effective `CLAUDE.md` files, manage context aggressively, use MCP servers, configure permissions and sandboxing — are written for software engineers but translate cleanly into creative practice.
+- **Why it matters.** For a designer, "tests" are not unit tests; they are screenshot comparisons, layout constraints, accessibility checks, exported file validation, render previews. The discipline is the same.
+- **What students can try.** Read the best-practices document with a translation lens: every time it says "test," ask what the equivalent visual or render-time verification is in your discipline.
+- **Maturity.** Official, evolving documentation.
+- **Best fit.** All disciplines.
+- **Source.** [Claude Code best practices](https://code.claude.com/docs/en/best-practices).
+
+### Card 4 — OpenAI Codex + MCP
+
+- **What it is.** OpenAI's coding agent, available as a CLI and IDE extension, with documented MCP support for STDIO and Streamable HTTP servers. Configuration lives in `~/.codex/config.toml` or project-level `.codex/config.toml`.
+- **Why it matters.** Codex becomes a creative tool the moment it is connected to project files and the right MCP servers. Useful examples include Figma, Playwright, Chrome DevTools, GitHub, documentation servers, and custom servers wrapping your own tools.
+- **What students can try.** Set up Codex with a Figma MCP server and a single project. Ask it to produce a small coded component from a Figma frame, then critique the result against the source.
+- **Maturity.** Official.
+- **Best fit.** Code-adjacent creative work: Remotion, Figma-to-code, HTML/CSS/JS motion, shader code, WebGL, p5.js, Processing, Three.js, Blender Python scripts, TouchDesigner helper scripts, batch exports, Git-managed design systems.
+- **Sources.** [Codex web docs](https://developers.openai.com/codex/cloud), [Codex MCP docs](https://developers.openai.com/codex/mcp), [Codex config basics](https://developers.openai.com/codex/config-basic).
+
+### Card 5 — Figma MCP + Claude Code to Figma
+
+- **What it is.** Two complementary workflows. Figma's MCP server lets coding agents work from Figma links and design context; the "Claude Code to Figma" workflow goes the other direction, capturing a real UI from production, staging, or localhost and converting it into editable Figma frames.
+- **Why it matters.** Code is good for convergence — collapsing a problem into a working system. Canvas is good for divergence — exploring layout, hierarchy, and visual logic in parallel. The "code-to-Figma-to-code" loop teaches when each mode is appropriate.
+- **What students can try.** Take a working coded interface, capture it back into Figma with the workflow, generate three layout alternatives manually in Figma, then return your chosen direction to the codebase.
+- **Maturity.** Official.
+- **Best fit.** Graphic, interaction, and UI/UX design.
+- **Sources.** [Figma blog](https://www.figma.com/blog/introducing-claude-code-to-figma/), [Figma MCP server guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server).
+
+### Card 6 — Figma Design System Rules for Claude Code and Codex
+
+- **What it is.** A Figma skill ("Create Design System Rules") that generates project-specific rule files — `CLAUDE.md` for Claude Code, `AGENTS.md` for Codex CLI — encoding components, layout primitives, naming conventions, tokens, styling, file locations, architectural patterns, and the things that should never be hardcoded.
+- **Why it matters.** This is where prompting becomes governance. The unwritten knowledge that lives in a senior designer's head — "we never use that font weight," "spacing comes from the token scale," "this component never appears outside that layout" — becomes machine-readable, and the design system becomes operational.
+- **What students can try.** Write a one-page mini design system for an imaginary cultural festival, generate `CLAUDE.md` or `AGENTS.md` rules from it, and test whether the agent respects typography, color, spacing, motion, and accessibility constraints when asked for new components.
+- **Maturity.** Official.
+- **Best fit.** Graphic design, interaction design, design systems work.
+- **Source.** [Figma developer docs — Create Design System Rules](https://developers.figma.com/docs/figma-mcp-server/skill-figma-create-design-system-rules/).
+
+### Card 7 — Remotion Agent Skills
+
+- **What it is.** Remotion is a React library for making videos programmatically. It maintains Agent Skills for Claude Code, Codex, Cursor, and other agents so they can scaffold and edit Remotion projects fluently.
+- **Why it matters.** Motion can become a system rather than a timeline. Once a template exists, an agent can generate dozens of variations across aspect ratios and durations while a human selects and refines the few that matter.
+- **What students can try.** Given a brand system, a small dataset, and three target durations, build a Remotion template that renders 20 variants across 16:9, 1:1, and 9:16, then manually select and refine the best three.
+- **Maturity.** Official, evolving.
+- **Best fit.** Motion design, typographic motion, data-driven video, social formats, generative identity.
+- **Source.** [Remotion AI skills](https://www.remotion.dev/docs/ai/skills).
+
+### Card 8 — HyperFrames
+
+- **What it is.** A project described as "Write HTML. Render video. Built for agents." HyperFrames is HTML-native, AI-first, deterministic, and designed for automated pipelines.
+- **Why it matters.** This is video as the web understands it: declarative layout, predictable rendering, easy templating. For students who already think in HTML/CSS/JS, it short-circuits the leap into "video software."
+- **What students can try.** Write a short composition entirely in HTML/CSS/JS, render it as video, then ask an agent to generate systematic variations using the deterministic rendering loop.
+- **Maturity.** Open-source project; treat as emerging.
+- **Best fit.** Graphic-to-motion crossover, web-native motion design, templated identity systems.
+- **Source.** [HyperFrames on GitHub](https://github.com/heygen-com/hyperframes).
+
+### Card 9 — Resolume MCP servers
+
+- **What it is.** Resolume 7.26 ships local MCP servers for Arena/Avenue and Wire. The documentation states they can be driven by Claude, OpenAI Codex, and other MCP-compatible AI tools. Arena/Avenue MCP supports building and managing compositions — loading files, sources, effects, layers, columns, and groups. Wire MCP supports patch creation from descriptions, node creation and wiring, inlet values, naming and colour-coding, grouped parameters, and ISF shader writing.
+- **Why it matters.** This is the first widely available example of agentic workflows inside professional live visuals and VJ software, not just a developer tool.
+- **What students can try.** Build a VJ composition for a piece of music. Use the agent for repetitive setup, clip organisation, and patch generation, but perform and critique the visual rhythm yourself.
+- **Maturity.** Official, recent.
+- **Best fit.** Live visuals, VJing, computational arts.
+- **Caveats.** Some dashboard presets, rendering, advanced output, mappings, cue points, and presets may not be accessible depending on the tool/version. Verify current limitations.
+- **Sources.** [Resolume 7.26 release blog](https://resolume.com/blog/34484), [Resolume MCP documentation](https://resolume.com/support/en/mcp-servers).
+
+### Card 10 — TouchDesigner MCP and community bridges
+
+- **What it is.** A cluster of experimental projects bringing agentic workflows into TouchDesigner. [`8beeeaaat/touchdesigner-mcp`](https://github.com/8beeeaaat/touchdesigner-mcp) is an MCP server intended to let AI agents create, modify, and delete nodes, query project structure, update parameters, and run scripts. Winfred_Nak's [Derivative community post](https://derivative.ca/community-post/asset/wip-claude-codeor-openclaw-mcp-bridge-touchdesigner/74168) documents a Claude Code or Openclaw + MCP bridge with Graph IR, WebSocket communication, diffing, vision feedback, and evolutionary/mutation workflows. Infratonal's [VIBE-Controller](https://derivative.ca/community-post/asset/vibe-controller-touchdesigner-build-any-ui-claude-code/74272) uses an agentic coding platform to generate HTML Canvas interfaces that run inside TouchDesigner, including a `CLAUDE.md` file and a sketch-to-interface workflow.
+- **Why it matters.** TouchDesigner is an unusually good site for experimentation: visual, procedural, real-time, and already structured as a graph. The graph form is exactly what an agent needs in order to reason about the work.
+- **What students can try.** Treat any of these projects as a research prototype. Read their code, follow their setups, and pay attention to where they insert intermediate representations (e.g. Graph IR) to keep agentic generation from becoming chaotic.
+- **Maturity.** Community/experimental.
+- **Best fit.** Computational arts, real-time graphics, live visuals research.
+- **Sources.** [touchdesigner-mcp](https://github.com/8beeeaaat/touchdesigner-mcp), [Winfred_Nak](https://derivative.ca/community-post/asset/wip-claude-codeor-openclaw-mcp-bridge-touchdesigner/74168), [VIBE-Controller](https://derivative.ca/community-post/asset/vibe-controller-touchdesigner-build-any-ui-claude-code/74272).
+
+### Card 11 — Claude Design + Canva
+
+- **What it is.** Claude Design, by Anthropic Labs, creates designs, prototypes, and presentations through conversation. Depending on current availability, it can hand off in formats such as Canva, PDF, PPTX, standalone HTML, folders, or Claude Code bundles. Canva's integration emphasises turning AI-generated drafts into editable, on-brand designs.
+- **Why it matters.** It is a visible example of a broader pattern: generated artifacts becoming editable production objects rather than dead images. The handoff is the point.
+- **What students can try.** Use Claude Design only for early ideation, then bring the result into Canva (or your real production environment) and rework it against a proper design system.
+- **Maturity.** Official, evolving.
+- **Best fit.** Early ideation, presentations, web mockups, branded asset drafts.
+- **Sources.** [Claude Design announcement](https://www.anthropic.com/news/claude-design-anthropic-labs), [Get started with Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design), [Canva newsroom](https://www.canva.com/newsroom/news/canva-claude-design/).
+
+> Even with strong tools, the underlying disciplines do not become optional. Typography, hierarchy, pacing, systems thinking, and critique remain the determinants of whether the result is any good.
+
+---
+
+## 7. What graphic designers can explore first
+
+If your background is graphic design, motion, or interaction and UI/UX, the path of least resistance and highest learning is roughly:
+
+1. **Figma MCP + design-system rules.** Start with the Figma "Create Design System Rules" skill on a small project. Generate a `CLAUDE.md` or `AGENTS.md`, then ask an agent to produce a new component in that system and audit how well it respects the rules.
+2. **Code-to-Figma-to-code.** Take a working interface (a personal site, a class project) and run the Claude Code to Figma workflow to capture it into editable frames. Diverge visually, then push back to code.
+3. **Remotion or HyperFrames.** Build a small motion identity system: tokens in, multiple aspect ratios out. Use the agent for scaffolding and variation; reserve final selection for yourself.
+4. **Claude Design / Canva.** Use this for ideation drafts only. Treat its output as a starting point that must be reworked against your own design system before it ever leaves your machine.
+
+The discipline-specific point: graphic design's centre of gravity in this world is the **design system**. A good `CLAUDE.md` or `AGENTS.md` is a design system that can act. Once you can write one well, every agentic workflow you touch becomes more controllable.
+
+---
+
+## 8. What computational artists can explore first
+
+If your background is creative coding, computational arts, live visuals, or experimental 3D, the path looks different:
+
+1. **Blender MCP.** Start by asking the agent to *describe* a scene before touching it. Then move to small, reversible tasks: cleanup, renaming, material standardisation, Geometry Nodes documentation. Resist the urge to ask for finished images.
+2. **TouchDesigner experiments.** Read the community projects listed above. Try one in a sandbox `.toe` file you do not care about. Pay attention to the intermediate graph representations — they are the most transferable idea.
+3. **Resolume MCP.** Use the Wire MCP server to generate small patches, then perform with them yourself. The interesting question is not "can the agent build a patch," but "does the patch reward play."
+4. **Custom MCP servers.** Once you have used a few, you will notice gaps. Building a small MCP server around a tool you use daily — a render queue, a logging system, a personal asset library — is one of the most clarifying things you can do.
+
+The discipline-specific point: computational arts' centre of gravity is the **instrument**. A patch, a Blender add-on, a TouchDesigner network, a shader chain — these are the artifacts that outlive any single performance or render. Agentic workflows are valuable to the extent that they make better instruments, not just more outputs.
+
+---
+
+## 9. Edge cases worth studying
+
+These are not "first projects." They are deliberately challenging cases that stretch the underlying ideas.
+
+### Edge case 1 — Blender scene forensics
+
+A messy scene: unnamed objects, duplicated materials, broken lights, too many cameras, inconsistent scale, heavy geometry. The agent inspects the scene, writes a cleanup script, organises collections, renames objects, standardises materials, creates a render checklist, and documents what changed. The interesting outcome is not an image; it is that the environment has been made legible and controllable.
+
+### Edge case 2 — Geometry Nodes co-pilot
+
+A student has a complex Geometry Nodes network. The agent helps explain it, isolate bugs, rename groups, create variants, document parameters, and propose safe refactors. The agent is functioning as a debugger and study partner inside procedural art.
+
+### Edge case 3 — Custom Blender tool builder
+
+A student asks Claude Code or Codex to build a Blender Python panel: a procedural poster generator, a camera rig controller, a lighting preset system, a render batch exporter. The output is an instrument, not a single picture.
+
+### Edge case 4 — Code-to-Figma-to-code loop
+
+Students generate a working interface in code, capture it into Figma as editable frames, explore alternate layouts visually, then return the chosen direction to the codebase using Figma MCP and design-system rules. The point is to learn convergence and divergence as complementary modes.
+
+### Edge case 5 — Design-system instruction files
+
+Students create `CLAUDE.md` and `AGENTS.md` files that encode a visual identity: type scale, grid, spacing, motion principles, color rules, accessibility constraints, and forbidden defaults. Prompting becomes governance.
+
+### Edge case 6 — Programmatic motion graphics with Remotion
+
+A brand campaign where every video is generated from data and design tokens. Claude Code or Codex builds the templates, previews variants, and renders batches. Motion design becomes a reusable system.
+
+### Edge case 7 — HyperFrames for HTML-native video
+
+Students write HTML/CSS/JS compositions, render them as video, and ask an agent to generate systematic variations using deterministic rendering. Graphic design, web design, and motion design converge.
+
+### Edge case 8 — TouchDesigner graph generation with safety constraints
+
+An agent generates a structured graph representation, which is then compiled into TouchDesigner nodes with a whitelist of safe operators. The intermediate representation is what makes agentic node generation manageable.
+
+### Edge case 9 — Sketch-to-interface inside TouchDesigner
+
+A student draws a control interface on paper, uploads it to Claude Code, and the agent produces an HTML Canvas UI running inside TouchDesigner with values streamed into CHOPs. Hand drawing becomes part of an agentic live-visuals instrument-building workflow.
+
+### Edge case 10 — Resolume live visuals preparation
+
+The agent prepares a VJ set: organising clips, checking codecs, building columns, layers, and groups, generating simple Wire patches, documenting what is safe to trigger, and creating a performance checklist. Preparation and live judgment are separated cleanly.
+
+### Edge case 11 — Multi-agent critique loop
+
+One agent builds, another reviews technical issues, another critiques composition, hierarchy, or motion. The human decides what matters. Students learn not to accept the first output and that critique itself can be structured.
+
+### Edge case 12 — Agent as documentation machine
+
+After building a patch, scene, or design system, the agent generates a visual documentation page, parameter map, source list, maintenance guide, and presentation notes. Documentation is part of professional creative practice; agents are unusually good at it.
+
+---
+
+## 10. Classroom labs and assignments
+
+A modular set of exercises. Use them as 30-minute experiments, two-hour labs, or multi-week assignments.
+
+### Short — Prompt vs protocol
+
+Students compare two workflows for the same brief:
+
+1. Ask a chatbot to describe a poster.
+2. Ask Claude Code or Codex to generate a coded poster system with editable variables and export settings.
+
+Discussion: what changes when the AI can *act* on files rather than only *describe* an idea?
+
+### Short — Studio rules for an AI collaborator
+
+Students write a one-page `CLAUDE.md` or `AGENTS.md` for a fictional studio, including: type system, color system, grid rules, naming conventions, accessibility constraints, banned visual clichés, export requirements, and verification steps. Then they test whether an agent actually follows it.
+
+### Lab — Blender tool, not Blender object
+
+Students must use an agent to create a small Blender tool rather than a finished scene. Examples: a procedural poster wall generator, a camera rig controller, a constrained material randomiser, a collection cleanup script, a batch render exporter, a Geometry Nodes documentation script. Assessment: is the tool understandable, reusable, and artistically useful?
+
+### Lab — Code to Figma to code
+
+Students create a UI prototype in code, capture it into Figma, explore three visual alternatives, then return the chosen direction to the codebase. Assessment: do they understand when to use code for convergence and Figma for divergence?
+
+### Lab — Motion identity system
+
+Students use Remotion or HyperFrames to build a motion identity system for a fictional event. Multiple aspect ratios and variations must be generated, with final outputs manually selected and refined. Assessment: does the system preserve identity across variants? Is the motion meaningful or just decorative?
+
+### Lab — TouchDesigner interface from sketch
+
+Students draw a control UI on paper, convert it into an HTML or TouchDesigner interface with Claude Code, then wire it into a live visual patch. Assessment: does the interface actually support performance? Are the controls expressive and readable?
+
+### Lab — Resolume preparation assistant
+
+Students use an agent-connected workflow to prepare a VJ composition, organise assets, check technical constraints, and document a performance map. Assessment: does the workflow make live performance safer and more expressive?
+
+### Multi-week assignment — Build an agentic creative instrument
+
+Students build a reusable creative instrument: a Blender add-on, TouchDesigner patch system, Remotion template, Figma design system, Resolume preparation workflow, or hybrid pipeline.
+
+Deliverables: concept statement, system diagram, project instruction file (`CLAUDE.md`, `AGENTS.md`, or equivalent), working prototype, three outputs made *with* the instrument, documentation, a reflection on where the agent helped and where human judgment mattered, a safety/ethics note, and a public demo.
+
+Evaluation criteria: clarity of creative intention, quality of the system/instrument, depth of human critique and refinement, technical robustness, originality, documentation, responsible use of AI, ability to explain the workflow to peers.
+
+---
+
+## 11. Workflow templates
+
+Copyable starting points. Adapt; do not treat as magic prompts.
+
+### Template 1 — Creative project setup
+
+```text
+You are helping me build a creative system, not a one-off output.
+First, inspect the project structure and summarise what exists.
+Do not make changes yet.
+Identify the files, tools, APIs, and constraints that matter.
+Then propose a plan with:
+1. what you will modify,
+2. what you will not modify,
+3. how we will verify the result visually or technically,
+4. what risks or assumptions exist.
+Wait for my approval before editing files.
+```
+
+### Template 2 — Visual verification loop
+
+```text
+After each implementation step, create or capture a visual preview.
+Compare it against the design goals:
+- hierarchy
+- contrast
+- rhythm
+- alignment
+- type scale
+- motion timing
+- accessibility
+- export correctness
+List what is working, what is not working, and what you will change next.
+Do not declare the task complete without a preview or verification artifact.
+```
+
+### Template 3 — Design-system rules request
+
+```text
+Create a project instruction file for this design system.
+It should include typography, grid, color, spacing, component rules, naming conventions, accessibility requirements, motion principles, and export rules.
+Also include a section called "Never do this" for visual clichés, hardcoded values, and common mistakes.
+Keep it concise enough that an agent will actually follow it.
+```
+
+### Template 4 — Blender scene cleanup
+
+```text
+Inspect the Blender scene through the available tools/API.
+Do not change anything yet.
+Report:
+- object count and major collections
+- naming problems
+- material duplication
+- scale inconsistencies
+- lighting/camera issues
+- heavy geometry or likely render bottlenecks
+Then propose a cleanup script and a rollback plan.
+```
+
+### Template 5 — TouchDesigner patch review
+
+```text
+Review this TouchDesigner network as a live visual instrument.
+Focus on:
+- node organisation
+- parameter readability
+- performance risks
+- control mapping
+- expressive range
+- failure points during performance
+Suggest changes that make it more playable, not just more complex.
+```
+
+### Template 6 — Remotion / HyperFrames video system
+
+```text
+Build this as a reusable motion system.
+Inputs:
+- brand tokens
+- dataset/content list
+- duration
+- aspect ratios
+- export formats
+- motion principles
+Generate a template architecture first.
+Then produce three visual directions and explain the trade-offs before rendering final variations.
+```
+
+---
+
+## 12. How to work safely and critically
+
+The critical questions belong here, in the middle of the resource, not buried at the end.
+
+### Authorship
+
+If the agent writes scripts, builds patches, or generates layouts, where is the student's authorship? Most usefully, it shifts toward brief, system design, curation, critique, constraints, and public framing — the parts of the practice the agent cannot do alone. A student who can defend a `CLAUDE.md`, a system diagram, and a critique log has authored something serious, even if the agent produced the intermediate code.
+
+### Taste and judgment
+
+Models produce plausible surfaces quickly. They do not guarantee meaningful visual decisions. The single most important skill in this landscape is the willingness to reject plausible mediocrity.
+
+### Deskilling vs reskilling
+
+Agentic tools can hide technical complexity, which is convenient and dangerous. The goal is not to remain ignorant of the underlying software; it is to expand the range of work you can credibly take responsibility for. If you cannot read, repair, or critique what the agent produced, you have not yet learned the discipline.
+
+### Safety and permissions
+
+MCP gives agents tool access; tool access is also risk. Sensible baseline:
+
+- Work in a copy of the project, not the original.
+- Use Git or another versioning system, and commit before giving an agent write access.
+- Use project-scoped configuration.
+- Start with read-only or planning mode when possible.
+- Allowlist only the tools and commands you actually need.
+- Prefer local sandboxed projects for experiments.
+- Review generated code before running it.
+- Do not give agents access to private credentials, client files, personal data, or production systems.
+- Keep MCP servers updated and prefer official sources.
+- Document which agent, model, prompts, tools, and sources you used.
+
+### Prompt injection and malicious instructions
+
+Agents that read files, websites, or third-party tools can be manipulated by malicious content. Be cautious when allowing an agent to read untrusted documents, web pages, or external project files.
+
+### Data, copyright, and attribution
+
+Source material, datasets, assets, and licensing remain the artist's responsibility. Document what the agent used and what you authored. If an output depends on third-party assets, treat that dependency as visible.
+
+### Environmental and economic costs
+
+Long, high-token workflows, heavy renders, and repeated model calls have real costs. Deliberate iteration, smaller scopes, and local previews are not just frugal; they are usually better practice.
+
+### Accessibility
+
+Agentic workflows can help check contrast, alt text, captions, responsive layout, and motion sensitivity — but only if those requirements appear in the brief and in the rules file. If they are not written down, they will not be respected.
+
+---
+
+## 13. Who and what to follow
+
+A short, deliberately incomplete list. Include people and projects to the extent that they represent a kind of practice, not just a name.
+
+- **The Blender community around the official MCP connector.** Worth watching for how an open-source 3D tool with a serious Python API absorbs agentic workflows.
+- **Anthropic's creative connectors ecosystem.** The most visible push to position a major model as creative infrastructure rather than a chatbot ([Anthropic](https://www.anthropic.com/news/claude-for-creative-work)).
+- **The Figma AI team and Figma MCP ecosystem.** Where design systems become operational.
+- **The Resolume team and the VJ/live visuals community around 7.26.** Where agentic workflows enter performance, not just production.
+- **The Remotion team and the Agent Skills ecosystem.** Where motion design becomes a programmable system.
+- **HyperFrames / HeyGen.** An example of agent-oriented video rendering treated as a web-native discipline.
+- **[`ahujasid/blender-mcp`](https://github.com/ahujasid/blender-mcp).** A community Blender MCP project — useful as both a tool and a reading.
+- **[`8beeeaaat/touchdesigner-mcp`](https://github.com/8beeeaaat/touchdesigner-mcp).** A community TouchDesigner MCP project worth studying line by line.
+- **Winfred_Nak's TouchDesigner MCP bridge** on Derivative — a sustained, public experiment with Graph IR, WebSocket communication, diffing, vision feedback, and multi-agent ideas.
+- **Infratonal's VIBE-Controller for TouchDesigner.** A clean example of sketch-to-interface inside a node-based environment.
+- **Educational programs** mentioned by Anthropic and others — RISD's Art and Computation, Ringling College of Art and Design, Goldsmiths' Computational Arts — verify exact wording from the source before quoting.
+
+The reason to follow any of these is the *kind of practice* they make visible: instrument-building, design-as-governance, real-time agentic systems, declarative motion, system-level critique.
+
+---
+
+## 14. The deeper lesson
+
+The most interesting creative use of Claude Code, Codex, and MCP is not that a machine can generate a picture. It is that artists can now build and modify the systems that generate, organise, test, perform, and document visual work.
+
+For graphic designers, that means design systems that can act. For computational artists, it means instruments that can be extended through conversation and code. For everyone, it means a sharper question about where authorship actually lives.
+
+The challenge for students is not to surrender authorship to the agent. It is to become more precise about what authorship is, and to locate it deliberately: in the constraints, the workflow, the critique, the performance, and the final act of choosing what matters.
+
+---
+
+## 15. Sources and update log
+
+### Primary sources
+
+**Anthropic / Claude**
+
+- [Claude for Creative Work](https://www.anthropic.com/news/claude-for-creative-work)
+- [Claude Code best practices](https://code.claude.com/docs/en/best-practices)
+- [Claude Design by Anthropic Labs](https://www.anthropic.com/news/claude-design-anthropic-labs)
+- [Get started with Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
+
+**OpenAI / Codex**
+
+- [Codex web documentation](https://developers.openai.com/codex/cloud)
+- [Codex MCP documentation](https://developers.openai.com/codex/mcp)
+- [Codex configuration basics](https://developers.openai.com/codex/config-basic)
+
+**Figma**
+
+- [Introducing Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/)
+- [Figma MCP server guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server)
+- [Create Design System Rules](https://developers.figma.com/docs/figma-mcp-server/skill-figma-create-design-system-rules/)
+
+**Blender**
+
+- [Blender MCP server](https://www.blender.org/lab/mcp-server/)
+- [Community Blender MCP project by ahujasid](https://github.com/ahujasid/blender-mcp)
+
+**Motion / video-as-code**
+
+- [Remotion Agent Skills](https://www.remotion.dev/docs/ai/skills)
+- [HyperFrames GitHub repository](https://github.com/heygen-com/hyperframes)
+
+**Resolume / live visuals**
+
+- [Resolume 7.26 release — MCP servers and REST API upgrades](https://resolume.com/blog/34484)
+- [Resolume MCP server documentation](https://resolume.com/support/en/mcp-servers)
+
+**TouchDesigner / computational arts**
+
+- [touchdesigner-mcp by 8beeeaaat](https://github.com/8beeeaaat/touchdesigner-mcp)
+- [Winfred_Nak — Claude Code or Openclaw + MCP bridge + TouchDesigner](https://derivative.ca/community-post/asset/wip-claude-codeor-openclaw-mcp-bridge-touchdesigner/74168)
+- [Infratonal — VIBE-Controller for TouchDesigner](https://derivative.ca/community-post/asset/vibe-controller-touchdesigner-build-any-ui-claude-code/74272)
+
+**Canva**
+
+- [Canva newsroom — Claude Design integration](https://www.canva.com/newsroom/news/canva-claude-design/)
+
+**Secondary context (use carefully)**
+
+- [The Verge — Anthropic Claude creative connectors, Adobe, Blender](https://www.theverge.com/ai-artificial-intelligence/919648/anthropic-claude-creative-connectors-adobe-blender)
+
+### Update log
+
+- **2026-05-21** — Initial publication. All source links to be re-verified before next teaching cycle. Resolume MCP coverage limited to versions documented in the 7.26 release notes; verify current Wire and Arena/Avenue MCP feature lists before relying on specifics in class.
