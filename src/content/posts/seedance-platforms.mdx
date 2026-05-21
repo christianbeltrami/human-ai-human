@@ -1,0 +1,209 @@
+---
+title: "Platforms for generating with Seedance: a reference catalogue"
+date: 2026-05-21
+modified: 2026-05-21
+lang: en
+author: "Christian Beltrami"
+tags: ["resources", "ai", "video", "seedance", "bytedance", "api", "video generation"]
+excerpt: "A structured catalogue of platforms, APIs, workflows, and independent sites that publicly expose Seedance or claim Seedance access. A literacy catalogue, not a recommendation list."
+description: "Catalogue of platforms, APIs, and workflows that publicly expose ByteDance's Seedance 1.0, 1.5 Pro, and 2.0 models, sorted by trust level and access type."
+seoTitle: "Seedance platforms — reference catalogue"
+hideSignature: true
+draft: false
+---
+
+**Last updated:** May 21, 2026  
+**Time context:** Late May 2026  
+**Audience:** Students, creators, researchers, and technical teams who want to understand where Seedance is publicly exposed.
+
+> **Independent resource notice**
+>
+> This catalogue is an independent Human-AI-Human educational resource. It is not a recommendation, a ranking, or an endorsement of any platform. It documents the public landscape of Seedance access points for literacy and editorial verification purposes.
+
+This page lists platforms that have **a model page, generator, playground, API documentation, workflow, or product integration** built around Seedance. Official access points, verified platforms, aggregators, and independent sites still under review are classified separately.
+
+> **Read first:** model availability, pricing, quotas, watermarks, and terms of use change rapidly. Every entry should be re-verified before being relied on for production.
+
+---
+
+## Seedance model index
+
+| Family | Summary |
+|---|---|
+| **Seedance 1.0 / 1.0 Lite / 1.0 Pro / 1.0 Pro Fast** | 1.x variants generally exposed as text-to-video and image-to-video, often via API or playground. |
+| **Seedance 1.5 Pro** | More advanced version, often positioned around video generation with audio or higher-quality video results. |
+| **Seedance 2.0 / 2.0 Fast** | Next-generation multimodal version with text, image, video, and audio inputs, multi-reference support, and native audio depending on platform. |
+
+---
+
+## Recommended primary choices by context
+
+These choices are flagged as **entry points to validate** for their respective category, not as universal recommendations.
+
+- **Official access / enterprise API:** BytePlus ModelArk / VolcEngine Ark.
+- **Battle-tested developer APIs:** Replicate, fal.ai, Vercel AI Gateway, Segmind, Magic Hour, Kie.ai, WaveSpeedAI.
+- **No-code creative:** CapCut / Dreamina, Runway, Higgsfield, Artlist, getimg.ai, OpenArt, Media.io, Topview AI.
+- **Technical workflows:** ComfyUI / Comfy Cloud, RunComfy.
+
+---
+
+## Trust level legend
+
+| Level | Meaning |
+|---|---|
+| **official** | Official ByteDance / BytePlus / VolcEngine source or documentation. |
+| **official_ecosystem** | ByteDance ecosystem product or distribution tied to ByteDance. |
+| **verified_platform** | Platform with a usable public page, documentation, or listed model. |
+| **review_required** | Public claim or independent site to verify before production. |
+| **excluded** | Should not be listed as direct Seedance access. |
+
+---
+
+## Official ByteDance access
+
+| Platform | Models | Access | Notes |
+|---|---|---|---|
+| **[Seed / Seedance official](https://seed.bytedance.com/en/seedance)** | 1.0, 1.5 Pro, 2.0 | Official page, try now, get API | Canonical ByteDance/Seed reference. Capabilities and restrictions vary by interface or API. |
+| **[Dreamina / Jimeng AI](https://dreamina.capcut.com/)** | 2.0 | Web UI, creative app | ByteDance creative interface for Seedance 2.0. May be subject to region or app restrictions. |
+| **[CapCut — Dreamina Seedance 2.0](https://www.capcut.com/tools/dreamina-seedance-2-0)** | Dreamina 2.0, 2.0 | Web, desktop, mobile, editor integration | Consumer no-code option. Verify rules on real faces, IP, and watermarking. |
+| **[Pippit](https://www.pippit.ai/)** | 2.0 | Web UI, marketing tool | ByteDance product oriented toward marketing/e-commerce. Less publicly documented than CapCut/Dreamina. |
+| **[Doubao](https://www.doubao.com/)** | 2.0 | Web, desktop, mobile | Primarily China channel; global access potentially limited. |
+| **[Jianying / 剪映](https://www.capcut.cn/)** | 2.0 | Desktop, mobile, editor integration | Chinese sister app of CapCut. Mostly useful for teams operating inside the Chinese ecosystem. |
+
+---
+
+## Official enterprise API
+
+| Platform | Models | Access | Notes |
+|---|---|---|---|
+| **[BytePlus ModelArk / VolcEngine Ark](https://docs.byteplus.com/en/docs/ModelArk/1520757)** | 1.5 Pro, 2.0, 2.0 Fast | API, enterprise documentation | Best choice for an official and contractual integration. Model IDs and quotas may evolve. Known model ID: `dreamina-seedance-2-0-260128`. |
+
+---
+
+## Verified creative platforms
+
+| Platform | Models | Notes |
+|---|---|---|
+| **[Runway](https://runwayml.com/)** | 2.0 | Professional platform. Sources mention Unlimited/Enterprise for Seedance access. Confirm availability in the account. |
+| **[Higgsfield](https://higgsfield.ai/seedance/2.0)** | 2.0 | Multimodal references: up to 9 images, 3 videos, 3 audios (12 files max), clips ≤ 15 s. |
+| **[Artlist AI Toolkit](https://artlist.io/ai/models/seedance-2-0)** | 2.0, 2.0 Fast | Fast for quick iteration, Standard for quality. Labels may change. |
+| **[getimg.ai](https://getimg.ai/models/bytedance-seedance)** | 1.0 Pro, 1.0 Pro Fast, 1.5 Pro, 2.0, 2.0 Fast | UI + API. Several Seedance variants. Carefully select the version in the interface. |
+| **[ImagineArt](https://www.imagine.art/blogs/how-to-use-seedance-2-0)** | 2.0 | Multimodal Seedance 2.0 access, multi-reference, clips ≤ 15 s. |
+| **[Morphic](https://morphic.com/resources/how-to/seedance-2-guide)** | 2.0 | No-code studio with up to 12 reference files, 4–15 s clips. |
+| **[Kapwing](https://www.kapwing.com/ai-video-generator)** | Seedance | Collaborative video editor. Exact version to confirm in the interface. |
+| **[OpenArt](https://openart.ai/blog/how-to-use-seedance-2-0/)** | 2.0, 1.0 I2V | Comparison with other visual models. |
+| **[Media.io](https://www.media.io/ai/image-to-video/multimodal-ai-video-generator)** | 2.0 | Multimodal generation: text, image, audio, video references. |
+| **[Freepik / Magnific](https://www.freepik.com/blog/introducing-seedance-fast/)** | Fast, 1.5 Pro, 2.0 Fast | Seedance 2.0 status varies across pages; confirm in the interface. |
+| **[Topview AI](https://www.topview.ai/seedance-2)** | 1.0 Pro Fast, 1.5 Pro, 2.0, 2.0 Fast | No-code/agent platform oriented toward marketing and e-commerce video. Dedicated API on Enterprise. |
+| **[Picsart](https://picsart.com/ai-models/seedance-2-0/)** | 2.0 | Model page in the AI tools catalogue. Verify the model available in the account. |
+| **[Pollo AI](https://docs.pollo.ai/m/seedance/seedance-pro)** | 1.0 Pro, 1.5 Pro, 2.0, 2.0 Fast | Hybrid UI + API. Confirm the exact model called per endpoint. |
+
+---
+
+## Workflows and technical environments
+
+| Platform | Models | Access | Notes |
+|---|---|---|---|
+| **[ComfyUI / Comfy Cloud](https://docs.comfy.org/tutorials/partner-nodes/bytedance/seedance-2-0)** | 2.0 | ComfyUI workflow, cloud workflow, nodes | Text-to-video, reference-to-video, and first/last-frame-to-video pipelines. Identify the API provider behind the nodes. |
+| **[RunComfy](https://www.runcomfy.com/models/bytedance/seedance-1-0)** | 1.0 Pro | Cloud playground, workflow | Test Seedance 1.0 Pro without installing ComfyUI locally. Do not confuse with Seedance 2.0. |
+
+---
+
+## Developer APIs
+
+| Platform | Models | Notes |
+|---|---|---|
+| **[fal.ai](https://github.com/fal-ai/seedance-2.0-api)** | 2.0, 2.0 Fast | Authorized provider API. Confirm contractual status for sensitive enterprise use. |
+| **[Replicate](https://replicate.com/bytedance/seedance-2.0)** | 1.0 Lite, 1.0 Pro, 1.0 Pro Fast, 1.5 Pro, 2.0, 2.0 Fast | API prototyping and playground. Confirm availability and per-generation pricing. |
+| **[Vercel AI Gateway](https://vercel.com/changelog/seedance-2.0-video-now-available-on-ai-gateway)** | 2.0, 2.0 Fast | For teams already on Vercel. Models: `bytedance/seedance-2.0` and `bytedance/seedance-2.0-fast`. |
+| **[Kie.ai](https://kie.ai/seedance-2-0)** | 1.0, 1.5 Pro, 2.0 | API + playground. Confirm pricing and per-model limits. |
+| **[WaveSpeedAI](https://wavespeed.ai/collections/seedance-2.0)** | 1.5 Pro, 2.0, 2.0 Fast | Standard/fast endpoints with video editing and extension. |
+| **[Segmind](https://www.segmind.com/models/seedance-2.0)** | 2.0, 2.0 Fast | Model API with text, image, video, audio references depending on the variant. |
+| **[Magic Hour API](https://magichour.ai/api/seedance-2-0)** | 2.0 | Creative API focused on continuity and reference-based control. |
+| **[AIML API](https://docs.aimlapi.com/api-references/video-models/bytedance/seedance-1.0-lite-text-to-video)** | 1.0 Lite, 1.5 Pro | Not necessarily Seedance 2.0; verify the endpoint. |
+| **[Eachlabs](https://www.eachlabs.ai/bytedance/seedance-v1/seedance-v1-lite-text-to-video)** | 1.0 Lite | Playground + API/SDK, limited to V1 Lite on the referenced page. |
+
+### Developer APIs requiring review
+
+| Platform | Models | Notes |
+|---|---|---|
+| **[Crun.ai](https://crun.ai/models/seedance-2)** | 2.0, 2.0 Fast | API to re-validate before production use. |
+| **[Pixazo](https://www.pixazo.ai/models/seedance)** | 1.0 Pro, 1.0 Lite, 2.0, 2.0 Fast | API/gateway with playground. Re-validate before commercial integration. |
+| **[ModelHunter](https://modelhunter.ai/models/seedance-1.0-pro-fast)** | 1.0 Pro Fast, 2.0 | Playground/API to re-validate before production use. |
+| **[PoYo](https://poyo.ai/models/seedance-2)** | 2.0 | API with T2V, I2V, and Reference2Video. Re-validate before client integration. |
+| **[inference.sh](https://inference.sh/apps/bytedance/seedance-2-0)** | 2.0 | Wrapper using BytePlus Ark. Identify the underlying account/provider. |
+| **[APIPod](https://www.apipod.ai/models/seedance-2.0)** | 2.0 | Single-key API gateway. Re-validate before production use. |
+| **[EvoLink](https://evolink.ai/seedance-2-0)** | 2.0 | Unified multi-model API. Verify provenance, rights, logs, and retention. |
+| **[APIMart](https://apimart.ai/model/doubao-seedance-2-0)** | Doubao 2.0, 2.0 | Gateway to verify for Doubao Seedance 2.0. |
+| **[iApp AI Gateway](https://iapp.co.th/blog/tags/ai)** | 2.0 | Regional gateway. Verify provenance and compliance. |
+| **[Loova / OpenClaw](https://loova.ai/openclaw/seedance-2-0)** | 2.0 | Video generation "skill" with an API key. Re-validate before professional use. |
+| **[ModelsLab](https://modelslab.com/blog/video-generation/seedance-2-api-developer-guide-2026)** | 2.0 | Developer guide. Re-validate before integration. |
+| **[Wiro.ai](https://wiro.ai/blog/seedance-2-0/)** | 2.0 | API page presented as next-gen AI video generation. Re-validate before production. |
+| **[ai.cc](https://www.ai.cc/seedance-10-pro/)** | 1.0 Pro | Aggregated API listing `bytedance/seedance-1-0-pro-t2v`. |
+
+---
+
+## Creative platforms requiring review
+
+| Platform | Models | Notes |
+|---|---|---|
+| **[DaVinci AI Toolkit](https://davinci.ai/video-generator/seedance-2-0)** | 2.0 | Product page. Re-validate before production use. |
+| **[Yolly AI](https://www.yolly.ai/models/seedance-2)** | 2.0 | Dedicated page with image/video/audio references, durations 5/10/15 s. Re-validate before commercial publication. |
+| **[WayinVideo](https://wayin.ai/tools/ai-video-generator/seedance/)** | 2.0 | Page advertises global access. Re-validate before client use. |
+| **[Ima Studio](https://imastudio.com/seedance-2-0)** | 2.0 | "Unlimited Seedance 2.0" with up to 12 references. Re-validate. |
+| **[WeShop AI](https://www.weshop.ai/blog/how-to-access-seedance-2-0-globally-the-no-chinese-phone-number-guide-for-ai-creators/)** | 2.0 | E-commerce oriented. Presented as a global access bridge; to verify. |
+| **[LlamaGen](https://llamagen.ai/m/seedance/seedance)** | Seedance | Text-to-video, image-to-video, comic-to-video, and video-to-video. Exact version to confirm. |
+| **[FluxPro.ai](https://www.fluxpro.ai/vm/seedance/seedance-1)** | 1.0 Pro, 1.0 Lite | Seedance 1.0 only. Re-validate before production. |
+| **[JXP](https://www.jxp.com/seedance/seedance-2-pro)** | 2.0, 1.5 Pro | API indicated as upcoming or variable. To confirm before integration. |
+| **[Seavid](https://seavidgen.com/)** | 2.0, 1.5 Pro | Platform listing text-to-video, image-to-video, and other visual modes. Re-validate. |
+| **[insMind](https://www.insmind.com/video-model/seedance-2-0)** | 2.0 | Dedicated page with text, images, and references. Re-validate before client use. |
+| **[Opus Agent](https://www.opus.pro/agent/models/seedance)** | 2.0 | Video agent. Re-validate on exact version and provider. |
+| **[lipsync.video](https://lipsync.video/seedance-2)** | 2.0 | Video generation and lip-sync workflows. Be careful with voice, face, and likeness rights. |
+
+---
+
+## Independent sites requiring review
+
+| Platform | Models | Notes |
+|---|---|---|
+| **[seedance2.ai](https://seedance2.ai/)** | 2.0 | Independent site advertising clips ≤ 15 s and watermark-free options. Official status / license unclear. |
+| **[seedance2.app](https://seedance2.app/)** | 2.0 | Independent web app. Up to 1080p/15 s depending on plan. Official status / license unclear. |
+| **[seedanceai.net](https://seedanceai.net/)** | 2.0 | Independent generator with other video models listed. Verify provenance, rights, and watermarking. |
+| **[seedance.ai](https://www.seedance.ai/)** | Seedance, 2.0 | Site mixing video and image models. The domain name may give an official impression; do not assume it is. |
+| **[seedance2ai.online](https://seedance2ai.online/)** | 2.0 | Advertises commercial licenses and watermark-free outputs. External marketing claim; do not treat as official validation. |
+| **[SeedanceAPI.com and unofficial GitHub clients](https://seedanceapi.com/)** | 2.0 | Unofficial API projects or clients. Treat as unofficial absent contractual proof. API, license, and security risk. |
+
+---
+
+## Pages that should not be classified as direct Seedance access
+
+These pages may be useful for comparison or landscape literacy, but they do not constitute direct access to Seedance.
+
+| Case | Reason |
+|---|---|
+| **[TensorPix / Hexal](https://tensorpix.ai/usecase/seedance-4k-ai-video-generator-tensorpix)** | The pages discuss quality comparable to Seedance, an alternative, or a competing model — not direct access to the Seedance model. |
+| **"Seedance-like", "alternative to Seedance", "matches Seedance" pages** | Useful for comparing video models, but they do not prove generation runs on Seedance. |
+| **Standalone social mentions (LinkedIn, forums, marketing posts without a product page / API)** | A social mention alone is not enough: there must be at minimum a product page, model ID, playground, API documentation, or terms of use. |
+
+---
+
+## Methodology
+
+This catalogue prioritizes **factual classification over recommendation**. Platforms are included only if they have a model page, generator, playground, API documentation, workflow, or product integration built around Seedance.
+
+Official access points, verified platforms, aggregators, and independent sites still under review are classified separately. Source URLs are listed at the entry level for audit or editorial verification.
+
+Because availability, pricing, and terms of use change frequently, every entry should be re-verified before being relied on for production or a client deliverable.
+
+---
+
+## Cite or link
+
+If this page is useful, you can link to it:
+
+**Platforms for generating with Seedance: a reference catalogue**  
+https://www.human-ai-human.org/posts/seedance-platforms
+
+Suggested citation:
+
+> Human-AI-Human. "Platforms for generating with Seedance: a reference catalogue." Updated May 21, 2026. https://www.human-ai-human.org/posts/seedance-platforms
