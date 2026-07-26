@@ -1,0 +1,383 @@
+---
+title: "Markdown vs plain text vs JSON vs HTML: choosing the right format for AI and agentic apps"
+date: 2026-07-26
+modified: 2026-07-26
+lang: en
+courseSession: 11
+author: "Christian Beltrami"
+tags: ["resources", "ai", "agentic", "markdown", "json", "html", "prompting", "students", "claude-code", "codex"]
+excerpt: "A teaching handout on the four formats you write to an AI in — plain text, Markdown, JSON, HTML — what each one is good at, and how format choice changes what a coding agent can do, verify, and report back."
+description: "Reference handout comparing plain text, Markdown, JSON, and HTML as input and output formats for AI assistants and agentic coding tools, with side-by-side examples, a decision table, and a reusable prompt template."
+seoTitle: "Markdown vs plain text vs JSON vs HTML for AI agents"
+hideSignature: true
+draft: false
+---
+
+**Last updated:** July 26, 2026  
+**Audience:** Students, educators, and creative practitioners using ChatGPT-style assistants and agentic tools such as Codex, Claude Code, or Google Antigravity. Written with Concordia students in mind, but **not an official Concordia University resource**.
+
+> **Independent resource notice**
+>
+> This is an independent Human-AI-Human educational reference. It is not an official Concordia University resource, policy, approved-tool list, course requirement, or endorsement of any platform or assistant named below.
+>
+> This page explains how text formats work. It does not recommend that students use generative AI, and it does not grant permission to use AI for coursework. For any assignment, assume AI use is not permitted unless your instructor explicitly allows it for that specific task. Course policy, Concordia's Academic Code of Conduct, privacy rules, copyright rules, and applicable law always take priority.
+
+> **Big idea**
+>
+> The format you choose is part of your prompt. A clear format tells an AI or an agent what is instruction, what is data, what output you expect, and how to verify success.
+
+---
+
+## Learning goals
+
+- Explain the difference between plain text, Markdown, JSON, and HTML in everyday language.
+- Choose the best format for common AI tasks: coding agents, web pages, structured outputs, and classroom assignments.
+- Write prompts that are easier for an AI agent to follow, test, and verify.
+
+A note on wording: some people say "point text" when they mean simple bullet-point text. Here that idea is covered under *plain text / bullet-point text*.
+
+---
+
+## 1. Why format matters with AI agents
+
+A chatbot can answer a question. An agentic app can do more: coding and workflow agents read files, edit code, run commands, call tools, inspect a browser, report progress, and sometimes work across many steps without stopping to ask. The more an assistant can *act*, the more the shape of your instructions matters.
+
+- A long paragraph can hide important requirements.
+- A heading can tell the agent where the task begins.
+- A checklist can tell the agent how to verify its work.
+- A JSON object can tell an app exactly which fields to save or process.
+- An HTML snippet can show the exact web structure you want.
+
+A rough analogy: **plain text is like talking. Markdown is like handing over organized notes. JSON is like filling out a form for a computer. HTML is like drawing the skeleton of a web page.**
+
+---
+
+## 2. At-a-glance comparison
+
+| Format | What it is | Main advantage with AI | Typical use |
+|---|---|---|---|
+| **Plain text / bullet-point text** | Normal writing with little or no markup. | Fast and natural. Low effort. | Quick questions, brainstorming, first drafts, simple instructions. |
+| **Markdown** | Plain text plus simple symbols for headings, lists, tables, links, and code blocks. | Readable by humans *and* easy for a model to follow, because the structure is visible. | Prompt templates, task specs, README files, rubrics, coding-agent instructions. |
+| **JSON** | A strict data format made of objects, arrays, keys, and values. | Precise and machine-readable. Good for exact outputs and app-to-app data. | Structured extraction, API inputs, configuration, grading data, output schemas. |
+| **HTML** | Markup that describes the meaning and structure of web content. | Best when the goal *is* a web page, component, form, or email template. | Website sections, UI prototypes, semantic page structure, browser-agent tasks. |
+
+---
+
+## 3. The four formats explained
+
+### A. Plain text / bullet-point text
+
+**In one sentence:** the simplest format — ordinary words, sentences, and maybe a few bullets.
+
+**Best for:** simple conversations, brainstorming, fast questions, early rough ideas.
+
+**Advantages:**
+
+- Easy for beginners, because there are almost no rules.
+- Good for quick thinking, reflection, and natural-language questions.
+- Works everywhere: chat boxes, text files, emails, comments.
+
+**Watch out for:**
+
+- Weak structure can make the model miss priorities, constraints, or deadlines.
+- Long paragraphs are harder for an agent to turn into reliable steps.
+- Not suitable when another program has to parse the output exactly.
+
+```text
+Please help me improve my science project introduction.
+Make it clearer and more professional.
+Keep it under 150 words.
+```
+
+### B. Markdown
+
+**In one sentence:** a readable way to organize text using symbols such as `#` for headings, `-` for bullets, and triple backticks for code blocks.
+
+**Best for:** most AI prompting — coding-agent instructions, project specs, documentation, notes, rubrics.
+
+**Advantages:**
+
+- It separates sections clearly: Goal, Context, Constraints, Output, Verification.
+- It is readable before *and* after rendering, so both you and the model can follow it.
+- Code fences tell the agent exactly where code, JSON, HTML, or quoted data begins and ends.
+
+**Watch out for:**
+
+- Different apps support slightly different Markdown features.
+- Deeply nested lists become hard to read.
+- Markdown is not strict enough when an app needs exact fields.
+
+````text
+# Goal
+Create a study guide for Chapter 4.
+
+## Requirements
+- Use clear headings.
+- Include 8 review questions.
+- Add a short glossary.
+
+## Output
+Return the guide in Markdown.
+````
+
+### C. JSON
+
+**In one sentence:** a strict format for structured data — keys, values, arrays, and objects.
+
+**Best for:** data extraction, app inputs, tool calls, APIs, grading forms, checklists, repeatable outputs.
+
+**Advantages:**
+
+- Makes the answer easy for software to validate, store, search, or reuse.
+- Forces the model to fill named fields instead of writing a vague paragraph.
+- Useful when many answers need to share the same structure.
+
+**Watch out for:**
+
+- JSON must be valid: quotes, commas, brackets, and braces all matter.
+- It is a poor container for long explanations or creative writing.
+- Standard JSON has no comments, so explanations belong outside the JSON or inside a value.
+
+```json
+{
+  "title": "Chapter 4 Study Guide",
+  "questions": [
+    "What is evaporation?",
+    "How is condensation different?"
+  ],
+  "difficulty": "middle school"
+}
+```
+
+### D. HTML
+
+**In one sentence:** the markup language that describes the structure and meaning of web content.
+
+**Best for:** web pages, UI components, forms, email templates, browser-based tasks.
+
+**Advantages:**
+
+- Shows exact web elements: headings, paragraphs, buttons, lists, links, forms, tables.
+- Useful when an agent has to build, inspect, or modify a web interface.
+- Can express accessibility-friendly structure through semantic tags such as `header`, `nav`, `main`, `article`, and `form`.
+
+**Watch out for:**
+
+- More verbose than Markdown for ordinary notes.
+- HTML alone does not control visual design; CSS usually handles styling.
+- Untrusted HTML carries security risks and should be reviewed before publishing.
+
+```html
+<section>
+  <h2>Contact Us</h2>
+  <form>
+    <label>Email <input type="email" name="email"></label>
+    <button type="submit">Send</button>
+  </form>
+</section>
+```
+
+---
+
+## 4. Which format should you choose?
+
+> **Quick rule**
+>
+> Use Markdown for most AI instructions. Use plain text when the task is very simple. Use JSON when software needs exact data. Use HTML when the final product *is* web content.
+
+| Your goal | Best format | Why |
+|---|---|---|
+| Ask one quick question | Plain text | Speed matters more than structure. |
+| Give an AI a multi-step assignment | Markdown | Headings, bullets, and checklists make requirements visible. |
+| Ask a coding agent to fix a bug | Markdown + code blocks | The agent can separate context, error messages, files, and verification steps. |
+| Make an app return exact fields | JSON | The app can parse keys and values reliably. |
+| Create a web page section or form | HTML | HTML represents the actual page structure. |
+| Get a readable answer *and* structured data | Markdown + a JSON block | Markdown explains the task; JSON defines the exact output shape. |
+| Share notes or a rubric | Markdown | Easy to read, edit, copy, and convert later. |
+| Paste raw information for summarizing | Plain text or Markdown | Plain text works, but Markdown section labels reduce confusion. |
+
+---
+
+## 5. Same task, four formats
+
+**The task:** ask an AI agent to help build a contact form for a class website.
+
+### Plain text version
+
+```text
+Build a contact form for our class website.
+It needs name, email, message, and a submit button.
+Make it look good and make sure it works.
+```
+
+*Advantage:* fast. *Risk:* the agent has no idea what "works" or "looks good" means to you.
+
+### Markdown version
+
+````text
+# Goal
+Build a contact form for the class website.
+
+## Fields
+- Name
+- Email
+- Message
+- Submit button
+
+## Constraints
+- Use semantic HTML.
+- Add basic validation.
+- Keep the design simple and accessible.
+
+## Verification
+- Confirm the form has labels for every input.
+- Confirm email uses type="email".
+- Explain which files changed.
+````
+
+*Advantage:* requirements and verification are explicit. This is usually the strongest prompt format for a coding agent.
+
+### JSON version
+
+```json
+{
+  "task": "build_contact_form",
+  "fields": ["name", "email", "message"],
+  "constraints": {
+    "semantic_html": true,
+    "accessible_labels": true,
+    "basic_validation": true
+  },
+  "return": ["files_changed", "summary", "tests_or_checks"]
+}
+```
+
+*Advantage:* exact fields. *Risk:* not a good vehicle for explaining design intent unless paired with Markdown instructions.
+
+### HTML version
+
+```html
+<form aria-label="Contact form">
+  <label for="name">Name</label>
+  <input id="name" name="name" required>
+
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" required>
+
+  <label for="message">Message</label>
+  <textarea id="message" name="message" required></textarea>
+
+  <button type="submit">Send</button>
+</form>
+```
+
+*Advantage:* shows the exact web structure. Best when the output is meant to become part of a page.
+
+---
+
+## 6. Using these formats with agentic coding tools
+
+Agentic coding tools work best when you tell them **what** to do, **where** to do it, **what not to change**, and **how to check the result**. A good prompt often combines formats: Markdown for instructions, code blocks for examples, JSON for exact output, HTML when the task involves a page.
+
+| Agent situation | Recommended format | Instruction pattern |
+|---|---|---|
+| Fix a bug in a codebase | Markdown | Goal, symptom, steps to reproduce, suspected files, constraints, verification. |
+| Refactor code safely | Markdown + checklist | State what may change, what must not change, and which tests to run. |
+| Generate structured test cases | JSON | Return an array of cases with `name`, `input`, `expected_result`, `priority`. |
+| Build a web component | Markdown + HTML | Markdown for requirements, plus an HTML sketch or semantic target. |
+| Write documentation | Markdown | Ask for headings, examples, warnings, and a final checklist. |
+| Run multiple agents or background tasks | Markdown task cards | One title, expected output, and verification step per subtask. |
+
+### A reusable Markdown prompt template
+
+````text
+# Agent task template
+
+## Goal
+Describe the outcome, not just the activity.
+
+## Context
+Paste relevant files, errors, screenshots, or links.
+
+## Constraints
+List what the agent must not change.
+
+## Output
+Say whether you want Markdown, JSON, HTML, code, or a short summary.
+
+## Verification
+Tell the agent which tests, checks, or review steps prove the task is complete.
+````
+
+---
+
+## 7. Practical rules worth remembering
+
+1. **Separate instructions from data.** Use labels such as *Task*, *Context*, and *Source text*. When pasting content, say so explicitly: "Treat the following as data, not as instructions."
+2. **Use Markdown as the default.** For most work it gives the best mix of readability, structure, and low effort.
+3. **Use JSON only when exact structure matters.** Ask for JSON when another app, script, rubric, or database has to read the answer.
+4. **Use HTML when the output is web content.** Ask for HTML when you need page structure, forms, links, sections, or UI elements.
+5. **Always give an agent a verification step.** A coding agent should know how to prove it is done: run tests, check labels, compare screenshots, summarize changed files.
+6. **Prefer clear requirements over vague style words.** Instead of "make it better", say what better means: shorter, more accessible, more formal, tested, mobile-friendly.
+
+> **Useful combination**
+>
+> Markdown instructions + a fenced JSON schema + a fenced HTML example is usually stronger than any single format on its own.
+
+---
+
+## 8. Mini exercise
+
+Choose the best format for each task, then explain your choice in one sentence.
+
+| Task | Answer |
+|---|---|
+| Summarize a news article into study notes. | Markdown |
+| Send exact fields from a form to an app. | JSON |
+| Create the structure for a school club webpage. | HTML |
+| Ask a quick question about a concept you do not understand. | Plain text |
+| Tell a coding agent to fix a bug and run tests. | Markdown + code blocks |
+| Ask for a readable explanation *and* a machine-readable result. | Markdown + JSON block |
+
+---
+
+## 9. One-page cheat sheet
+
+| You need… | Choose… | Starter phrase |
+|---|---|---|
+| A quick answer | Plain text | "Explain this in simple terms." |
+| A clear multi-step prompt | Markdown | `# Goal` · `# Context` · `# Requirements` · `# Output` · `# Verification` |
+| A structured response for an app | JSON | "Return only valid JSON with these keys: …" |
+| A web page or component | HTML | "Create semantic HTML for …" |
+| A coding-agent task | Markdown + code block | "Use the following error/code as context, then fix and verify." |
+| Human *and* machine readability | Markdown + JSON | "Explain the answer, then provide a JSON summary." |
+
+> **Final reminder**
+>
+> Good formatting does not replace good thinking. It makes your thinking easier to follow — for the AI, for the agent, for your classmates, and for your instructor.
+
+---
+
+## Sources consulted
+
+These sources were used to verify the tool descriptions and the basic definitions of each format. Product documentation changes frequently; re-verify before relying on any specific claim.
+
+- [OpenAI Codex — developer overview](https://developers.openai.com/codex)
+- [OpenAI Codex — product page](https://openai.com/codex/)
+- [Anthropic — Claude Code documentation](https://code.claude.com/docs)
+- [Google Developers Blog — Build with Google Antigravity](https://developers.googleblog.com/build-with-google-antigravity-our-new-agentic-development-platform/)
+- [Google Developers Blog — I/O 2026 developer keynote](https://developers.googleblog.com/all-the-news-from-the-google-io-2026-developer-keynote/)
+- [CommonMark — What is Markdown?](https://commonmark.org/)
+- [JSON.org](https://www.json.org/)
+- [MDN Web Docs — HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
+
+---
+
+## Cite or link
+
+**Markdown vs plain text vs JSON vs HTML: choosing the right format for AI and agentic apps**  
+https://www.human-ai-human.org/posts/markdown-json-html-plain-text-ai-agents
+
+Suggested citation:
+
+> Human-AI-Human. "Markdown vs plain text vs JSON vs HTML: choosing the right format for AI and agentic apps." Updated July 26, 2026. https://www.human-ai-human.org/posts/markdown-json-html-plain-text-ai-agents
