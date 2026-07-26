@@ -25,6 +25,10 @@ draft: false
 >
 > The format you choose is part of your prompt. A clear format tells an AI or an agent what is instruction, what is data, what output you expect, and how to verify success.
 
+> **Companion piece**
+>
+> This page compares the four formats. A second resource, [JSON prompting for images and video: what it actually controls](/posts/json-prompting-images-video), goes deeper into one of them — what JSON can and cannot do when prompting image and video models, and why its real value lies in controlling your own process rather than in making the model obey.
+
 ---
 
 ## Learning goals
@@ -147,6 +151,8 @@ Return the guide in Markdown.
   "difficulty": "middle school"
 }
 ```
+
+A warning specific to JSON: much of what circulates online promises that wrapping a prompt in JSON makes an image or video model obey more precisely. That claim is mostly unsupported, and the distinction between JSON a system actually parses and JSON pasted into a plain text field matters a great deal. The companion resource, [JSON prompting for images and video](/posts/json-prompting-images-video), works through the evidence.
 
 ### D. HTML
 
