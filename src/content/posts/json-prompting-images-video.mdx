@@ -1,0 +1,191 @@
+---
+title: "JSON prompting for images and video: what it actually controls"
+date: 2026-07-26
+modified: 2026-07-26
+lang: en
+courseSession: 5
+author: "Christian Beltrami"
+tags: ["resources", "ai", "video", "image generation", "json", "prompting", "workflow", "flux", "veo", "kling"]
+excerpt: "JSON prompting is sold as a way to make image and video models obey. The documented evidence says something narrower and more useful: it is a way to control your own process — isolate one variable, change one field, keep a record of what you decided."
+description: "A critical reference on JSON prompting for image and video generation: the three different things the term describes, what providers actually document, what the community claims, and why the real benefit is process control rather than output quality."
+seoTitle: "JSON prompting for images and video — what it actually controls"
+hideSignature: true
+draft: false
+---
+
+**Last updated:** July 26, 2026  
+**Audience:** Artists, filmmakers, designers, and students working with generative image and video models. Written with Concordia students in mind, but **not an official Concordia University resource**.
+
+> **Independent resource notice**
+>
+> This is an independent Human-AI-Human educational reference. It is not an official Concordia University resource, policy, approved-tool list, course requirement, or endorsement of any model or platform named below.
+>
+> This page analyses a prompting technique. It does not recommend that students use generative AI, and it does not grant permission to use AI for coursework. For any assignment, assume AI use is not permitted unless your instructor explicitly allows it for that specific task. Course policy, Concordia's Academic Code of Conduct, privacy rules, copyright rules, and applicable law always take priority.
+
+> **Verification notice**
+>
+> Model behaviour, documentation, and product availability change quickly. Every schema, parameter name, and claim below should be re-verified against primary documentation before being relied on for teaching or production. Availability in particular is volatile — OpenAI's Sora, which appears here only as a documentary source, has been discontinued (see the note in section 4).
+
+---
+
+## The short answer
+
+JSON prompting is real, but the reason it is usually sold is not the reason it works.
+
+It is not, in most cases, a way to make the model understand you better. Google, in its own prompting guides for both Veo and Nano Banana, never mentions JSON at all and recommends narrative description instead. Image and video models were trained overwhelmingly on image–caption pairs written in ordinary language — not on data files.
+
+What JSON gives you is **control over your own process**: the ability to isolate one variable, change one field, keep the rest fixed, and know afterwards what you actually decided. That is a smaller claim than the one circulating online. It is also, for anyone building a body of work rather than a single lucky image, a much more valuable one.
+
+---
+
+## 1. Three different things called "JSON prompting"
+
+Most of the confusion in this debate comes from collapsing three unrelated situations into one phrase. They have completely different reliability.
+
+### Level 1 — JSON that the API actually parses
+
+Real structured parameters, read by the platform, not by the model's language understanding. Kling's video API, for example, exposes multi-shot generation through `multi_shot`, `shot_type`, and a `multi_prompt` array of objects with `index`, `prompt`, and `duration` fields, bounded by documented constraints (up to six storyboards, each at least one second, durations summing to the total). Seeds, aspect ratios, durations, and resolution settings belong to this level too, as do ComfyUI's API-format workflow graphs.
+
+This level is deterministic. The structure is machine-read. If you change `duration`, the duration changes.
+
+### Level 2 — JSON the model was documented to read
+
+Rare. The clearest case is **FLUX.2**, whose official guide states that "for complex scenes and production workflows, FLUX.2 interprets structured JSON prompts, giving you precise control over every aspect of your image," and publishes a schema: `scene`, `subjects[]`, `style`, `color_palette`, `lighting`, `mood`, `background`, `composition`, `camera`.
+
+Note what the same page also says: "FLUX.2 understands both formats equally well — choose based on your workflow needs." Even the vendor that documents JSON support does not claim JSON produces better images. It claims JSON suits certain workflows.
+
+### Level 3 — JSON pasted into a plain text field
+
+This is roughly ninety percent of what circulates as "JSON prompting." The `prompt` parameter is a string. Your braces, quotation marks, and colons are tokenized like any other characters. Nothing is parsed. The model may well infer structure from the layout — models are good at reading structured text — but there is no contract, no validation, and no guarantee that a field name means anything to the system.
+
+Level 3 is not worthless. It is just not what its name implies. Understanding which level you are on is the entire practical skill.
+
+---
+
+## 2. Process control: the part that matters for artists
+
+Set aside the question of whether JSON makes a better image. Ask instead what a practice looks like when your intent is written down in fields rather than dissolved into a paragraph.
+
+### You can isolate a single variable
+
+This is the core of it. A prose prompt is a single undifferentiated block: when you rewrite it to change the light, you almost always change the rhythm of the sentence, the adjective order, the emphasis — and you no longer know which edit moved the image. A field-based prompt lets you change `lighting` and leave the other eleven values byte-identical.
+
+Combine that with a **fixed seed** and you have something closer to an actual experiment: one variable changed, everything else held constant, sampling noise removed. Without a fixed seed you cannot distinguish your edit from the model's randomness, and most side-by-side "proofs" circulating online fail exactly here. Seed control is exposed on some platforms and not others; check before assuming your comparison means anything.
+
+### You build a parameter sheet, not a lucky accident
+
+Filmmakers already work this way. A camera report, a lighting plot, a colour script, a lens list — these exist because a look has to be reproducible across days, locations, and crews. A structured prompt is the same kind of document. It records focal length, palette, mood, and framing as separate, inspectable decisions rather than as a sentence you will never reconstruct.
+
+The practical consequence: a good result stops being an accident you screenshot and becomes a configuration you can return to.
+
+### You can hold a series together
+
+Single images are easy. A series is where prompting practice actually breaks down. If twelve images need the same palette, the same lens character, and the same treatment of skin and shadow while the subject changes, a template with one variable field does that reliably and a rewritten paragraph does not. This applies to character consistency, product ranges, title sequences, poster series, and any sequential work.
+
+### You can diff and version your intent
+
+A structured prompt can live in a text file next to the work, under version control, in a repository or a project folder. You can diff two versions and see precisely what changed between the render you liked and the one you did not. Prose does not diff meaningfully; a field does.
+
+### You can hand it to someone else
+
+A collaborator, a studio partner, an instructor, or your future self can read a field list and know what was specified — and, just as importantly, what was left unspecified and therefore improvised by the model. That distinction is invisible in a paragraph and obvious in a schema with empty values.
+
+### You can document authorship honestly
+
+Where a course, a client, a festival, or a publisher requires disclosure of AI use, "here is the parameter set, the seed, the model version, and the sequence of edits" is a substantively different statement from "I typed something and this came out." Structured prompts make the human decisions legible as decisions. If you are asked to account for your process — and you increasingly are — this is the difference between having a record and having a memory.
+
+### The failure mode worth naming
+
+Structure can quietly replace looking. A twenty-field schema feels like rigour, and it is easy to spend an afternoon refining `atmospheric_density` while never asking whether the image is any good. The fields are a way of remembering what you decided. They are not a substitute for deciding, and they are not evidence that the model honoured any of them. Verify against the output, every time. A field the model ignores is still sitting in your file looking authoritative.
+
+---
+
+## 3. What people actually say about it
+
+Community discourse on this is unusually polarised, and it is worth reading as sentiment rather than as evidence. Positions cluster into three groups.
+
+**The advocates** — mostly prompt-template sellers, agency blogs, and productivity channels — claim JSON delivers "dramatically better adherence," eliminates ambiguity, reduces "prompt drift" and hallucinated elements, and produces repeatable accuracy across batches. A large share of this content is published by sites that also sell JSON prompt generators or template packs, which is worth weighing. The claims are typically demonstrated with a single flattering before/after pair and no seed control.
+
+**The debunkers** argue it is a placebo. Photographer Chase Jarvis ran a side-by-side test with Nano Banana Pro: he had Gemini describe a reference image as strict JSON, translated that JSON back into natural language, and generated each version twice. His conclusion was that "these images all look essentially the same, with the expected random variation you'll get from LLMs," and that JSON adds non-visual noise — brackets, quotes, colons — that consumes attention budget without contributing visual information. The reasoning is plausible and the test is honest about its scale; it is a practitioner comparison, not a study.
+
+**The middle position**, which the documentation supports best, is that JSON does not make models smarter but does remove ambiguity from *your* side, and makes prompts easier to test, reuse, template, and scale. One structured comparison on Veo 3-Fast across four scenario types (August 2025) found natural language sufficient for simple prompts and a JSON advantage on complex multi-subject scenes — a signal from a small sample, not a result.
+
+The honest summary: the loudest claims come from the least disinterested sources, the strongest rebuttal comes from a two-run test, and nobody has published a controlled study.
+
+---
+
+## 4. What the providers actually document
+
+| Model / platform | Official position on JSON | What it recommends instead |
+|---|---|---|
+| **FLUX.2** (Black Forest Labs) | Documented JSON schema, explicitly supported | Natural language for exploration; "both formats equally well" |
+| **Kling** | Real structured API parameters for multi-shot (`multi_shot`, `multi_prompt`) | Plain-string prompt per shot, inside the structure |
+| **Google Veo 3.1** | Not mentioned anywhere | `[Cinematography] + [Subject] + [Action] + [Context] + [Style & ambiance]`, in prose |
+| **Google Nano Banana** | Not mentioned anywhere | `[Subject] + [Action] + [Location/context] + [Composition] + [Style]`, narratively described |
+| **Seedream (ByteDance)** | Not documented as a prompt format | Descriptive natural language; action + object + attributes |
+| **Midjourney** | No JSON; flag-based parameters | Prose plus `--` parameters and reference images |
+
+Two observations are worth more than the table itself.
+
+**First:** Google's own image guide is explicit that "a simple list of keywords won't cut it; you need to describe the scene narratively" — yet its recommended formula is a *labelled* structure, `[Subject] + [Action] + [Location/context] + [Composition] + [Style]`, written as prose. So the real question was never structure versus no structure. Everyone recommends structure. The question is which syntax carries it, and braces are only one option — and not the one most of these models saw during training.
+
+**Second, on Sora:** OpenAI's Sora 2 prompting cookbook is frequently cited in JSON-prompting arguments, and it is worth knowing that it recommends no such thing — its shot-list sections exist for human clarity, and the API takes a plain string. It is also worth knowing that **Sora is gone**. OpenAI announced the discontinuation on March 24, 2026, shut down the web and app experience on April 26, 2026, and has scheduled the Videos API and the `sora-2` model family for shutdown on September 24, 2026. Cite it as documentary evidence of how OpenAI framed video prompting; do not treat it as a tool you can plan around.
+
+---
+
+## 5. What the evidence supports
+
+There is no peer-reviewed study comparing JSON to natural language specifically for text-to-image or text-to-video generation. Anyone claiming otherwise is citing a blog post.
+
+The closest rigorous work is on language models, not diffusion models: a Microsoft/MIT study compared plain text, Markdown, JSON, and YAML with semantic content held identical. Format mattered enormously — up to 40% performance variation on some tasks for GPT-3.5 — but the effect was **unpredictable and model-specific**. GPT-3.5 favoured JSON; GPT-4 favoured Markdown. The authors found no universally optimal format.
+
+That is the most defensible conclusion available, and it cuts against both camps: format is not neutral, *and* JSON is not reliably the winner. Which means the only honest way to know whether a schema helps on the model you use today is to test it on that model, with a fixed seed, one variable at a time — which is, conveniently, the practice this whole technique is good for.
+
+---
+
+## 6. Practical patterns
+
+**Know your level before you write.** Level 1 (real API parameters) is worth learning properly. Level 2 applies to FLUX.2 and little else today. Level 3 is a formatting choice, and should be defended as a formatting choice.
+
+**Keep JSON as the source of truth you edit, then flatten it to prose before sending** — unless you are on a model that documents JSON support, or a genuinely structured API. You get the versioning, diffing, and single-field editing benefits without betting on a syntax the model may not have been trained to read. A short script, or the assistant you are already using, can do the flattening.
+
+**Fix the seed before comparing anything.** Without it you are comparing noise.
+
+**Change one field at a time.** Two changes tell you nothing about either.
+
+**Keep the schema small.** Twelve meaningful fields you actually vary beat forty inherited from a template pack. Every field you never change is decoration.
+
+**Record what the model ignored.** When a field has no visible effect across several seeds, note it. That knowledge is model-specific, perishable, and more useful than any template you can download.
+
+---
+
+## 7. Limits of this page
+
+- No controlled study exists for image or video; the strongest evidence cited here is drawn from language models and is explicitly non-transferable by its own authors.
+- Kling's parameter details were confirmed through documentation summaries after the official API reference returned an HTTP 446 on direct access; re-verify at the source before building against them.
+- The official Seedream 4.x prompt guide on BytePlus could not be retrieved directly; its treatment here is based on secondary summaries and should be treated as provisional.
+- Model versions cited are current as of July 2026 and will not stay current.
+
+---
+
+## Sources consulted
+
+**Primary documentation**
+
+- [Black Forest Labs — FLUX.2 prompting guide](https://docs.bfl.ai/guides/prompting_guide_flux2)
+- [Google Cloud — Ultimate prompting guide for Veo 3.1](https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-veo-3-1) (October 15, 2025)
+- [Google Cloud — Ultimate prompting guide for Nano Banana](https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-nano-banana) (March 5, 2026)
+- [Google — Gemini API image generation documentation](https://ai.google.dev/gemini-api/docs/image-generation)
+- [Kling AI — API documentation](https://kling.ai/document-api/apiReference/model/textToVideo)
+- [OpenAI — Sora 2 prompting guide (cookbook)](https://github.com/openai/openai-cookbook/blob/main/examples/sora/sora2_prompting_guide.ipynb) — documentary only; product discontinued
+- [OpenAI — Video generation API guide, deprecation notice](https://developers.openai.com/api/docs/guides/video-generation)
+
+**Research**
+
+- [He, Rungta, Koleczek, Sekhon, Wang, Hasan — "Does Prompt Formatting Have Any Impact on LLM Performance?" arXiv:2411.10541](https://arxiv.org/html/2411.10541v1)
+
+**Practitioner tests and commentary**
+
+- [Chase Jarvis — Does JSON prompting actually work? Tested with Nano Banana](https://chasejarvis.com/blog/does-json-prompting-actually-work-tested-with-nano-banana/)
+- [302.AI — The art of instructions: comparing JSON and NL prompts in AIGC](https://medium.com/@302.AI/the-art-of-instructions-comparing-json-and-nl-prompts-in-aigc-5e82432cf6c7) (August 5, 2025)
+- [PromptLayer — Is JSON prompting a good strategy?](https://blog.promptlayer.com/is-json-prompting-a-good-strategy/)

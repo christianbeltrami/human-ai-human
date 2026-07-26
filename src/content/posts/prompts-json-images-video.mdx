@@ -1,0 +1,191 @@
+---
+title: "Prompter en JSON pour l'image et la vidéo : ce que ça contrôle vraiment"
+date: 2026-07-26
+modified: 2026-07-26
+lang: fr
+courseSession: 5
+author: "Christian Beltrami"
+tags: ["resources", "ia", "vidéo", "génération d'images", "json", "prompting", "workflow", "flux", "veo", "kling"]
+excerpt: "Le prompt JSON est vendu comme un moyen de faire obéir les modèles d'image et de vidéo. La documentation dit quelque chose de plus étroit et de plus utile : c'est un moyen de contrôler son propre processus — isoler une variable, ne changer qu'un champ, garder trace de ce qu'on a décidé."
+description: "Référence critique sur le prompt JSON en génération d'images et de vidéos : les trois choses différentes que le terme recouvre, ce que les fournisseurs documentent réellement, ce que dit la communauté, et pourquoi le vrai bénéfice est le contrôle du processus plutôt que la qualité des sorties."
+seoTitle: "Prompter en JSON pour l'image et la vidéo — ce que ça contrôle"
+hideSignature: true
+draft: false
+---
+
+**Dernière mise à jour :** 26 juillet 2026  
+**Public :** artistes, cinéastes, designers et étudiants qui travaillent avec des modèles génératifs d'image et de vidéo. Rédigé en pensant aux étudiants de Concordia, mais **ce n'est pas une ressource officielle de l'Université Concordia**.
+
+> **Avis de ressource indépendante**
+>
+> Ceci est une référence pédagogique indépendante de Human-AI-Human. Ce n'est pas une ressource officielle de Concordia, ni une politique, ni une liste d'outils approuvés, ni une exigence de cours, ni une caution donnée à un modèle ou à une plateforme mentionnés ci-dessous.
+>
+> Cette page analyse une technique de prompt. Elle ne recommande pas aux étudiants d'utiliser l'IA générative et n'accorde aucune permission de l'utiliser dans un travail de cours. Pour tout travail noté, présumez que l'usage de l'IA n'est pas permis à moins que votre enseignant ne l'autorise explicitement pour cette tâche précise. La politique du cours, le Code de conduite académique de Concordia, les règles de vie privée, le droit d'auteur et la loi applicable ont toujours préséance.
+
+> **Avis de vérification**
+>
+> Le comportement des modèles, la documentation et la disponibilité des produits changent vite. Chaque schéma, nom de paramètre et affirmation ci-dessous doit être revérifié auprès de la documentation primaire avant d'être utilisé en enseignement ou en production. La disponibilité est particulièrement volatile : Sora, d'OpenAI, qui n'apparaît ici qu'à titre de source documentaire, a été discontinué (voir la section 4).
+
+---
+
+## La réponse courte
+
+Le prompt JSON existe, mais la raison pour laquelle on le vend n'est pas la raison pour laquelle il fonctionne.
+
+Ce n'est pas, dans la plupart des cas, un moyen de mieux se faire comprendre du modèle. Google, dans ses propres guides de prompt pour Veo comme pour Nano Banana, ne mentionne jamais le JSON et recommande plutôt la description narrative. Les modèles d'image et de vidéo ont été entraînés en très large majorité sur des paires image-légende écrites en langue ordinaire — pas sur des fichiers de données.
+
+Ce que le JSON vous donne, c'est **le contrôle de votre propre processus** : la capacité d'isoler une variable, de ne changer qu'un champ, de garder le reste fixe, et de savoir après coup ce que vous aviez réellement décidé. C'est une affirmation plus modeste que celle qui circule en ligne. C'est aussi, pour quiconque construit un corpus d'œuvres plutôt qu'une image chanceuse, une affirmation bien plus utile.
+
+---
+
+## 1. Trois choses différentes appelées « prompt JSON »
+
+L'essentiel de la confusion vient du fait qu'on regroupe trois situations sans rapport sous une seule expression. Leur fiabilité n'a rien à voir.
+
+### Niveau 1 — du JSON que l'API analyse réellement
+
+De vrais paramètres structurés, lus par la plateforme et non par la compréhension linguistique du modèle. L'API vidéo de Kling, par exemple, expose la génération multi-plans par `multi_shot`, `shot_type` et un tableau `multi_prompt` d'objets comportant `index`, `prompt` et `duration`, encadrés par des contraintes documentées (jusqu'à six storyboards, chacun d'au moins une seconde, dont la somme des durées égale la durée totale). Les seeds, formats d'image, durées et résolutions relèvent aussi de ce niveau, tout comme les graphes de workflow au format API de ComfyUI.
+
+Ce niveau est déterministe. La structure est lue par la machine. Si vous changez `duration`, la durée change.
+
+### Niveau 2 — du JSON que le modèle est documenté pour lire
+
+Rare. Le cas le plus net est **FLUX.2**, dont le guide officiel indique que « for complex scenes and production workflows, FLUX.2 interprets structured JSON prompts, giving you precise control over every aspect of your image », et publie un schéma : `scene`, `subjects[]`, `style`, `color_palette`, `lighting`, `mood`, `background`, `composition`, `camera`.
+
+Notez ce que la même page ajoute : « FLUX.2 understands both formats equally well — choose based on your workflow needs. » Même le fournisseur qui documente la prise en charge du JSON ne prétend pas que le JSON produit de meilleures images. Il affirme que le JSON convient à certains flux de travail.
+
+### Niveau 3 — du JSON collé dans un champ texte
+
+C'est environ quatre-vingt-dix pour cent de ce qui circule sous le nom de « prompt JSON ». Le paramètre `prompt` est une chaîne de caractères. Vos accolades, guillemets et deux-points sont tokenisés comme n'importe quel autre caractère. Rien n'est analysé. Le modèle peut très bien inférer une structure à partir de la mise en forme — les modèles lisent bien le texte structuré — mais il n'y a ni contrat, ni validation, ni garantie qu'un nom de champ signifie quoi que ce soit pour le système.
+
+Le niveau 3 n'est pas sans valeur. Il n'est simplement pas ce que son nom laisse croire. Savoir à quel niveau on se trouve, c'est toute la compétence pratique.
+
+---
+
+## 2. Le contrôle du processus : ce qui compte pour les artistes
+
+Laissons de côté la question de savoir si le JSON produit une meilleure image. Demandons plutôt à quoi ressemble une pratique où l'intention est écrite en champs plutôt que dissoute dans un paragraphe.
+
+### On peut isoler une seule variable
+
+C'est le cœur de la chose. Un prompt en prose est un bloc indifférencié : quand on le réécrit pour changer la lumière, on change presque toujours le rythme de la phrase, l'ordre des adjectifs, les accents — et on ne sait plus quelle modification a déplacé l'image. Un prompt en champs permet de changer `lighting` en laissant les onze autres valeurs identiques au byte près.
+
+Combinez cela avec un **seed fixe** et vous obtenez quelque chose qui ressemble à une véritable expérience : une variable modifiée, tout le reste maintenu constant, bruit d'échantillonnage écarté. Sans seed fixe, vous ne pouvez pas distinguer votre modification du hasard du modèle, et c'est exactement là qu'échouent la plupart des « preuves » comparatives qui circulent. Le contrôle du seed est exposé sur certaines plateformes et pas sur d'autres : vérifiez avant de supposer que votre comparaison veut dire quelque chose.
+
+### On construit une feuille de paramètres, pas un accident chanceux
+
+Les cinéastes travaillent déjà ainsi. Un rapport caméra, un plan de lumière, un color script, une liste d'optiques existent parce qu'un look doit être reproductible d'un jour à l'autre, d'un lieu à l'autre, d'une équipe à l'autre. Un prompt structuré est un document du même ordre. Il consigne la focale, la palette, l'ambiance et le cadre comme des décisions distinctes et inspectables, plutôt que comme une phrase que vous ne reconstituerez jamais.
+
+Conséquence pratique : un bon résultat cesse d'être un accident dont on fait une capture d'écran pour devenir une configuration à laquelle on peut revenir.
+
+### On peut tenir une série
+
+Les images uniques sont faciles. C'est sur la série que la pratique du prompt casse vraiment. Si douze images doivent partager la même palette, le même caractère d'optique et le même traitement de la peau et des ombres pendant que le sujet change, un gabarit avec un seul champ variable le fait de façon fiable, et un paragraphe réécrit non. Cela vaut pour la constance d'un personnage, une gamme de produits, un générique, une série d'affiches, et tout travail séquentiel.
+
+### On peut versionner et comparer son intention
+
+Un prompt structuré peut vivre dans un fichier texte à côté de l'œuvre, sous contrôle de version, dans un dépôt ou un dossier de projet. On peut comparer deux versions et voir précisément ce qui a changé entre le rendu qu'on a aimé et l'autre. La prose ne se compare pas utilement ; un champ, oui.
+
+### On peut le transmettre
+
+Un collaborateur, un partenaire de studio, un enseignant ou votre vous-même futur peut lire une liste de champs et savoir ce qui a été spécifié — et, tout aussi important, ce qui a été laissé vide et donc improvisé par le modèle. Cette distinction est invisible dans un paragraphe et évidente dans un schéma à valeurs vides.
+
+### On peut documenter honnêtement l'autorat
+
+Là où un cours, un client, un festival ou un éditeur exige la divulgation de l'usage de l'IA, « voici le jeu de paramètres, le seed, la version du modèle et la séquence des modifications » est un énoncé substantiellement différent de « j'ai tapé quelque chose et voilà ce qui est sorti ». Les prompts structurés rendent les décisions humaines lisibles *comme* décisions. Si on vous demande de rendre compte de votre processus — et on vous le demande de plus en plus —, c'est la différence entre avoir une trace et avoir un souvenir.
+
+### Le mode d'échec qu'il faut nommer
+
+La structure peut discrètement remplacer le regard. Un schéma à vingt champs donne une impression de rigueur, et il est facile de passer un après-midi à peaufiner `atmospheric_density` sans jamais se demander si l'image est bonne. Les champs servent à se rappeler ce qu'on a décidé. Ils ne remplacent pas la décision, et ils ne prouvent pas que le modèle en a honoré un seul. Vérifiez contre la sortie, chaque fois. Un champ que le modèle ignore reste dans votre fichier, l'air parfaitement autoritaire.
+
+---
+
+## 3. Ce que les gens en disent
+
+Le discours communautaire sur le sujet est inhabituellement polarisé, et il vaut mieux le lire comme un climat d'opinion que comme une preuve. Les positions se regroupent en trois camps.
+
+**Les partisans** — surtout des vendeurs de gabarits, des blogues d'agence et des chaînes de productivité — affirment que le JSON offre une « adhérence nettement supérieure », élimine l'ambiguïté, réduit la « dérive du prompt » et les éléments hallucinés, et produit une exactitude reproductible en série. Une large part de ce contenu est publiée par des sites qui vendent aussi des générateurs de prompts JSON ou des lots de gabarits, ce qui mérite d'être pesé. Les démonstrations reposent typiquement sur une seule paire avant/après flatteuse, sans contrôle du seed.
+
+**Les sceptiques** y voient un placebo. Le photographe Chase Jarvis a mené un test comparatif avec Nano Banana Pro : il a fait décrire une image de référence par Gemini en JSON strict, retraduit ce JSON en langue naturelle, puis généré chaque version deux fois. Sa conclusion : « these images all look essentially the same, with the expected random variation you'll get from LLMs », le JSON ajoutant du bruit non visuel — crochets, guillemets, deux-points — qui consomme du budget d'attention sans apporter d'information visuelle. Le raisonnement est plausible et le test est honnête quant à son échelle ; c'est une comparaison de praticien, pas une étude.
+
+**La position médiane**, qui est celle que la documentation soutient le mieux, veut que le JSON ne rende pas les modèles plus intelligents mais lève l'ambiguïté de *votre* côté, et rende les prompts plus faciles à tester, réutiliser, gabariser et industrialiser. Une comparaison structurée sur Veo 3-Fast portant sur quatre types de scénarios (août 2025) concluait au langage naturel suffisant pour les prompts simples et à un avantage du JSON sur les scènes complexes à sujets multiples — un signal issu d'un petit échantillon, pas un résultat.
+
+Le résumé honnête : les affirmations les plus fortes viennent des sources les moins désintéressées, la meilleure réfutation repose sur un test à deux passes, et personne n'a publié d'étude contrôlée.
+
+---
+
+## 4. Ce que les fournisseurs documentent réellement
+
+| Modèle / plateforme | Position officielle sur le JSON | Ce qui est recommandé à la place |
+|---|---|---|
+| **FLUX.2** (Black Forest Labs) | Schéma JSON documenté, explicitement pris en charge | Langue naturelle pour l'exploration ; « both formats equally well » |
+| **Kling** | Vrais paramètres d'API structurés pour le multi-plans (`multi_shot`, `multi_prompt`) | Prompt en chaîne simple par plan, à l'intérieur de la structure |
+| **Google Veo 3.1** | Jamais mentionné | `[Cinématographie] + [Sujet] + [Action] + [Contexte] + [Style et ambiance]`, en prose |
+| **Google Nano Banana** | Jamais mentionné | `[Sujet] + [Action] + [Lieu/contexte] + [Composition] + [Style]`, décrit narrativement |
+| **Seedream (ByteDance)** | Pas documenté comme format de prompt | Langue naturelle descriptive ; action + objet + attributs |
+| **Midjourney** | Pas de JSON ; paramètres par indicateurs | Prose, paramètres `--` et images de référence |
+
+Deux observations valent plus que le tableau lui-même.
+
+**Premièrement :** le guide image de Google est explicite — « a simple list of keywords won't cut it; you need to describe the scene narratively » — et pourtant sa formule recommandée est une structure *étiquetée*, `[Sujet] + [Action] + [Lieu/contexte] + [Composition] + [Style]`, écrite en prose. Le vrai débat n'a donc jamais été « structure contre absence de structure ». Tout le monde recommande de la structure. La question est de savoir quelle syntaxe la porte, et les accolades ne sont qu'une option parmi d'autres — et pas celle que la plupart de ces modèles ont vue à l'entraînement.
+
+**Deuxièmement, au sujet de Sora :** le cookbook de prompt Sora 2 d'OpenAI est fréquemment cité dans les argumentaires pro-JSON, et il vaut la peine de savoir qu'il ne recommande rien de tel — ses sections de type shot list existent pour la clarté humaine, et l'API reçoit une chaîne simple. Il vaut aussi la peine de savoir que **Sora n'existe plus**. OpenAI a annoncé l'abandon le 24 mars 2026, fermé l'application et l'expérience web le 26 avril 2026, et programmé l'arrêt de l'API Videos et de la famille de modèles `sora-2` au 24 septembre 2026. Citez-le comme trace documentaire de la façon dont OpenAI concevait le prompt vidéo ; ne le traitez pas comme un outil sur lequel on peut bâtir.
+
+---
+
+## 5. Ce que la preuve soutient
+
+Il n'existe aucune étude évaluée par les pairs comparant le JSON à la langue naturelle spécifiquement en génération d'images ou de vidéos. Quiconque prétend le contraire cite un billet de blogue.
+
+Le travail rigoureux le plus proche porte sur les modèles de langue, pas sur les modèles de diffusion : une étude Microsoft/MIT a comparé texte brut, Markdown, JSON et YAML à contenu sémantique identique. Le format comptait énormément — jusqu'à 40 % d'écart de performance sur certaines tâches pour GPT-3.5 — mais l'effet était **imprévisible et propre à chaque modèle**. GPT-3.5 privilégiait le JSON ; GPT-4 privilégiait le Markdown. Les auteurs n'ont trouvé aucun format universellement optimal.
+
+C'est la conclusion la plus défendable dont on dispose, et elle dérange les deux camps : le format n'est pas neutre, *et* le JSON ne gagne pas de façon fiable. Ce qui veut dire que la seule manière honnête de savoir si un schéma aide sur le modèle que vous utilisez aujourd'hui, c'est de le tester sur ce modèle, à seed fixe, une variable à la fois — c'est-à-dire, précisément, la pratique pour laquelle cette technique est bonne.
+
+---
+
+## 6. Pratiques utiles
+
+**Sachez à quel niveau vous êtes avant d'écrire.** Le niveau 1 (vrais paramètres d'API) mérite d'être appris sérieusement. Le niveau 2 concerne FLUX.2 et à peu près rien d'autre aujourd'hui. Le niveau 3 est un choix de mise en forme, et devrait être défendu comme tel.
+
+**Gardez le JSON comme source de vérité que vous éditez, puis aplatissez-le en prose avant l'envoi** — sauf sur un modèle qui documente la prise en charge du JSON, ou sur une API réellement structurée. Vous conservez les bénéfices de versionnage, de comparaison et d'édition champ par champ sans parier sur une syntaxe que le modèle n'a peut-être pas appris à lire. Un petit script, ou l'assistant que vous utilisez déjà, peut faire l'aplatissement.
+
+**Fixez le seed avant toute comparaison.** Sans lui, vous comparez du bruit.
+
+**Changez un champ à la fois.** Deux changements ne vous apprennent rien sur ni l'un ni l'autre.
+
+**Gardez le schéma petit.** Douze champs signifiants que vous faites réellement varier valent mieux que quarante hérités d'un lot de gabarits. Tout champ que vous ne changez jamais est décoratif.
+
+**Notez ce que le modèle ignore.** Quand un champ n'a aucun effet visible sur plusieurs seeds, consignez-le. Ce savoir est propre au modèle, périssable, et plus utile que n'importe quel gabarit téléchargeable.
+
+---
+
+## 7. Limites de cette page
+
+- Aucune étude contrôlée n'existe pour l'image ou la vidéo ; la preuve la plus solide citée ici provient des modèles de langue et est déclarée non transférable par ses propres auteurs.
+- Les détails de paramètres de Kling ont été confirmés par des restitutions de la documentation après que la référence d'API officielle a renvoyé une erreur HTTP 446 en accès direct ; revérifiez à la source avant de développer contre eux.
+- Le guide de prompt officiel de Seedream 4.x sur BytePlus n'a pas pu être récupéré directement ; son traitement ici repose sur des résumés secondaires et doit être considéré comme provisoire.
+- Les versions de modèles citées sont à jour en juillet 2026 et ne le resteront pas.
+
+---
+
+## Sources consultées
+
+**Documentation primaire**
+
+- [Black Forest Labs — guide de prompt FLUX.2](https://docs.bfl.ai/guides/prompting_guide_flux2)
+- [Google Cloud — Ultimate prompting guide for Veo 3.1](https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-veo-3-1) (15 octobre 2025)
+- [Google Cloud — Ultimate prompting guide for Nano Banana](https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-nano-banana) (5 mars 2026)
+- [Google — documentation de génération d'images de l'API Gemini](https://ai.google.dev/gemini-api/docs/image-generation)
+- [Kling AI — documentation d'API](https://kling.ai/document-api/apiReference/model/textToVideo)
+- [OpenAI — guide de prompt Sora 2 (cookbook)](https://github.com/openai/openai-cookbook/blob/main/examples/sora/sora2_prompting_guide.ipynb) — documentaire seulement ; produit discontinué
+- [OpenAI — guide d'API de génération vidéo, avis de dépréciation](https://developers.openai.com/api/docs/guides/video-generation)
+
+**Recherche**
+
+- [He, Rungta, Koleczek, Sekhon, Wang, Hasan — « Does Prompt Formatting Have Any Impact on LLM Performance? » arXiv:2411.10541](https://arxiv.org/html/2411.10541v1)
+
+**Tests de praticiens et commentaires**
+
+- [Chase Jarvis — Does JSON prompting actually work? Tested with Nano Banana](https://chasejarvis.com/blog/does-json-prompting-actually-work-tested-with-nano-banana/)
+- [302.AI — The art of instructions: comparing JSON and NL prompts in AIGC](https://medium.com/@302.AI/the-art-of-instructions-comparing-json-and-nl-prompts-in-aigc-5e82432cf6c7) (5 août 2025)
+- [PromptLayer — Is JSON prompting a good strategy?](https://blog.promptlayer.com/is-json-prompting-a-good-strategy/)
